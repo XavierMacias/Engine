@@ -36,7 +36,7 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	}*/
 	float* vertices = (float*)(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
 
-	for (unsigned i = 0; i < mesh->mNumFaces; ++i)
+	for (unsigned i = 0; i < mesh->mNumVertices; ++i)
 	{
 		*(vertices++) = mesh->mVertices[i].x;
 		*(vertices++) = mesh->mVertices[i].y;
