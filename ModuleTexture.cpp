@@ -19,22 +19,39 @@ bool ModuleTexture::Init()
 	ilInit();
 	iluInit();
 
-	ilGenImages(1, &texid); 
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+
+	return true;
+}
+
+
+// Called every draw update
+update_status ModuleTexture::Update()
+{
+	return UPDATE_CONTINUE;
+}
+
+unsigned ModuleTexture::Load(const char* file_name) {
+	
+	ILuint texid;
+
+	ilGenImages(1, &texid);
 	ilBindImage(texid);
 
 	ILboolean success;
-	ILenum Error;
-	success = ilLoadImage("lenna.png");
-	if (success == IL_TRUE) /* If no error occured: */
+	//ILenum Error;
+	unsigned textureID;
+
+	success = ilLoadImage(file_name);
+	if (success == IL_TRUE)
 	{
 		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 
 	}
 	if (success == IL_FALSE)
 	{
-		/* Error occured */
 		LOG("ERROR");
-		return false;
 	}
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -47,20 +64,14 @@ bool ModuleTexture::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	ilDeleteImage(texid);
-	return true;
-}
 
-
-// Called every draw update
-update_status ModuleTexture::Update()
-{
-	return UPDATE_CONTINUE;
+	return textureID;
 }
 
 bool ModuleTexture::CleanUp()
 {
-	ilDeleteImage(texid);
-	glDeleteTextures(1, &textureID);
+	//ilDeleteImage(texid);
+	//glDeleteTextures(1, &textureID);
 	return true;
 
 }

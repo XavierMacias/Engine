@@ -14,6 +14,7 @@ class ModuleRenderExercise;
 class ModuleProgram;
 class ModuleTexture;
 class ModuleDebugDraw;
+class ModuleModel;
 
 class Application
 {
@@ -36,6 +37,7 @@ public:
 	ModuleProgram* program = nullptr;
 	ModuleTexture* texture = nullptr;
 	ModuleDebugDraw* draw = nullptr;
+	ModuleModel* model = nullptr;
 
 private:
 

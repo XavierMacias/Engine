@@ -12,9 +12,6 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
-	unsigned getTexture() { return textureID; }
-private:
-	ILuint texid;
-	unsigned textureID;
+	unsigned Load(const char* file_name);
 };
 
