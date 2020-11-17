@@ -1,7 +1,8 @@
 #include "ModuleEditor.h"
-#include "ModuleRender.h"
+#include "ModuleRenderExercise.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
+#include "ModuleModel.h"
 #include "Globals.h"
 #include "Application.h"
 #include "ImGui/imgui.h"
@@ -23,8 +24,9 @@ bool ModuleEditor::Init()
 {    
 
     ImGui::CreateContext();
-    ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->GetContext());
+    ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->exercise->GetContext());
     ImGui_ImplOpenGL3_Init();
+    focused = false;
 
 	return true;
 }
@@ -35,8 +37,7 @@ update_status ModuleEditor::PreUpdate()
     ImGui_ImplSDL2_NewFrame(App->window->window);
     ImGui::NewFrame();
 
-    ImGui::ShowDemoWindow();
-    ImGui::Render();
+    //ImGui::ShowDemoWindow();
 
     return UPDATE_CONTINUE;
 }
@@ -44,6 +45,22 @@ update_status ModuleEditor::PreUpdate()
 // Called every draw update
 update_status ModuleEditor::Update()
 {
+    ImGui::Begin("Editor");
+    ImGui::Text("Num Vertices: %d", App->model->GetVertices());
+    ImGui::Text("Num Triangles: %d", App->model->GetTriangles());
+    ImGui::Text("Diffuse Texture: ");
+    ImGui::SetWindowSize({ 250,100 });
+    if (ImGui::IsWindowFocused()) {
+        focused = true;
+    }
+    else {
+        focused = false;
+    }
+
+    ImGui::End();
+
+    ImGui::Render();
+
     ImGui::UpdatePlatformWindows();
     ImGui::RenderPlatformWindowsDefault();
     
@@ -54,7 +71,6 @@ update_status ModuleEditor::Update()
 
 update_status ModuleEditor::PostUpdate()
 {
-
     return UPDATE_CONTINUE;
 }
 

@@ -16,10 +16,13 @@ public:
 	bool CleanUp();
 	void Load(const char* file_name);
 	void Draw();
+	int GetVertices();
+	int GetTriangles();
 
 private:
-	void LoadMaterials(const aiScene* scene);
-	void LoadMeshes(const aiScene* scene);
+	void LoadMaterials();
+	void LoadMeshes();
+	const aiScene* scene;
 
 	std::vector<unsigned> materials;
 	std::vector<Mesh> meshes;

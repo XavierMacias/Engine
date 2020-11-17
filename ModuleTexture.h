@@ -13,5 +13,6 @@ public:
 	update_status Update();
 	bool CleanUp();
 	unsigned Load(const char* file_name);
+	void FreeTexture(unsigned textID);
 };
 

@@ -64,7 +64,7 @@ unsigned ModuleTexture::Load(const char* file_name) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	ilDeleteImage(texid);
-
+	// donde hago el deletetexture?
 	return textureID;
 }
 
@@ -74,4 +74,8 @@ bool ModuleTexture::CleanUp()
 	//glDeleteTextures(1, &textureID);
 	return true;
 
+}
+
+void ModuleTexture::FreeTexture(unsigned textID) {
+	glDeleteTextures(1, &textID);
 }

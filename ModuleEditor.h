@@ -14,5 +14,8 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
+	bool GetFocused() { return focused; }
+private:
+	bool focused;
 };
 

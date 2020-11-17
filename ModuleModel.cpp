@@ -29,22 +29,27 @@ update_status ModuleModel::Update()
 
 bool ModuleModel::CleanUp()
 {
+	for (unsigned i = 0; i < materials.size(); ++i) {
+		App->texture->FreeTexture(materials[i]);
+	}
+	materials.clear();
+	meshes.clear();
 	return true;
 
 }
 
 void ModuleModel::Load(const char* file_name) {
-	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
+	scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene) {
-		LoadMaterials(scene);
-		LoadMeshes(scene);
+		LoadMaterials();
+		LoadMeshes();
 	}
 	else {
 		LOG("ERROR");
 	}
 }
 
-void ModuleModel::LoadMaterials(const aiScene* scene) {
+void ModuleModel::LoadMaterials() {
 	aiString file;
 	//materials.reserve(scene->mNumMaterials);
 
@@ -57,7 +62,7 @@ void ModuleModel::LoadMaterials(const aiScene* scene) {
 	}
 }
 
-void ModuleModel::LoadMeshes(const aiScene* scene) {
+void ModuleModel::LoadMeshes() {
 	aiString file;
 	//meshes.reserve(scene->mNumMeshes);
 
@@ -76,4 +81,19 @@ void ModuleModel::Draw() {
 	for (unsigned i = 0; i < meshes.size(); ++i) {
 		meshes[i].Draw(materials);
 	}
+}
+
+int ModuleModel::GetVertices() {
+	int vertices = 0;
+	for (unsigned i = 0; i < scene->mNumMeshes; ++i)
+	{
+		vertices += scene->mMeshes[i]->mNumVertices;
+	}
+
+	return vertices;
+}
+
+int ModuleModel::GetTriangles() {
+
+	return GetVertices() / 3;
 }

@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
+#include "ModuleEditor.h"
 #include "SDL.h"
 #include "GL/glew.h"
 #include <chrono>
@@ -139,7 +140,7 @@ void ModuleCamera::RotateMouse() {
 		sped *= 3;
 	}
 
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT)) {
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) && !App->editor->GetFocused()) {
 		iPoint mouse = App->input->GetMouseMotion();
 
 		Rotate(frustum.WorldMatrix().RotatePart().RotateY(mouse.x*sped*deltaTime));
@@ -175,12 +176,8 @@ update_status ModuleCamera::Update()
 	double fps = (1.0 / deltaTime) * 1000;
 	oldTime = clock();
 
-	projectionGL = frustum.ProjectionMatrix(); //<-- Important to transpose!
-
+	projectionGL = frustum.ProjectionMatrix();
 	viewMatrix = frustum.ViewMatrix();
-
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadMatrixf(*projectionGL.v);
 
 	MoveForward();
 	MoveLateral();
@@ -189,9 +186,6 @@ update_status ModuleCamera::Update()
 	Yaw();
 	RotateMouse();
 	WheelMouse();
-
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadMatrixf(*(viewMatrix).v);
 
 	App->input->SetWheel(0);
 
