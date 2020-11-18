@@ -45,10 +45,10 @@ update_status ModuleEditor::PreUpdate()
 // Called every draw update
 update_status ModuleEditor::Update()
 {
-    ImGui::Begin("Editor");
-    ImGui::Text("Num Vertices: %d", App->model->GetVertices());
-    ImGui::Text("Num Triangles: %d", App->model->GetTriangles());
-    ImGui::Text("Diffuse Texture: ");
+    ImGui::Begin("Configuration");
+    ImGui::Text("Times per second");
+    ImGui::Text("Render: ");
+    ImGui::Text("Window: ");
     ImGui::SetWindowSize({ 250,100 });
     if (ImGui::IsWindowFocused()) {
         focused = true;

@@ -10,7 +10,7 @@
 ModuleCamera::ModuleCamera()
 {
 	position = float3(0, 1, -2);
-	speed = 0.001;
+	speed = 0.002;
 	oldTime = 0.0;
 }
 
@@ -38,7 +38,7 @@ void ModuleCamera::Yaw() {
 
 	float sped = speed;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
-		sped *= 3;
+		sped *= 2;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LEFT)) {
 		float3x3 rotationMatrix = frustum.WorldMatrix().RotatePart().RotateY(sped);
@@ -56,7 +56,7 @@ void ModuleCamera::Pitch() {
 
 	float sped = speed;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
-		sped *= 3;
+		sped *= 2;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_UP)) {
@@ -79,7 +79,7 @@ void ModuleCamera::MoveForward() {
 
 	float sped = speed;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
-		sped *= 3;
+		sped *= 2;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_W)) {
@@ -100,7 +100,7 @@ void ModuleCamera::MoveLateral() {
 
 	float sped = speed;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
-		sped *= 3;
+		sped *= 2;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_A)) {
@@ -120,7 +120,7 @@ void ModuleCamera::MoveLateral() {
 void ModuleCamera::MoveUp() {
 	float sped = speed;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
-		sped *= 3;
+		sped *= 2;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_Q)) {
@@ -137,7 +137,7 @@ void ModuleCamera::MoveUp() {
 void ModuleCamera::RotateMouse() {
 	float sped = speed;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
-		sped *= 3;
+		sped *= 2;
 	}
 
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) && !App->editor->GetFocused()) {
@@ -155,7 +155,7 @@ void ModuleCamera::RotateMouse() {
 void ModuleCamera::WheelMouse() {
 	float sped = speed;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
-		sped *= 3;
+		sped *= 2;
 	}
 	if (App->input->GetWheel() > 0) {
 		frustum.Translate(frustum.Front() * sped * 30);
