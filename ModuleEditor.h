@@ -1,6 +1,10 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include <vector>
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_opengl3.h"
+#include "ImGui/imgui_impl_sdl.h"
 
 
 class ModuleEditor : public Module
@@ -14,8 +18,15 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
-	bool GetFocused() { return focused; }
+	void ConfigurationWindow(int index);
+	void Console(int index);
+	void AddLog(const char* fmt);
+	bool GetFocused();
 private:
-	bool focused;
+	ImGuiTextBuffer buf;
+	bool scrollToBottom;
+	std::vector<bool> focuseds;
 };
+
+#define NUM_EDITORS 2
 

@@ -49,7 +49,7 @@ void ModuleCamera::Yaw() {
 		float3x3 rotationMatrix = frustum.WorldMatrix().RotatePart().RotateY(-sped);
 		Rotate(rotationMatrix);
 	}
-	
+
 }
 
 void ModuleCamera::Pitch() {
@@ -65,7 +65,7 @@ void ModuleCamera::Pitch() {
 		frustum.SetFront(oldFront);
 		frustum.SetUp(oldUp);
 	}
-	
+
 	if (App->input->GetKey(SDL_SCANCODE_DOWN)) {
 		vec oldFront = (frustum.Front() * cos(-sped) + frustum.Up() * sin(-sped)).Normalized();
 		vec oldUp = frustum.WorldRight().Cross(oldFront);
@@ -143,9 +143,9 @@ void ModuleCamera::RotateMouse() {
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) && !App->editor->GetFocused()) {
 		iPoint mouse = App->input->GetMouseMotion();
 
-		Rotate(frustum.WorldMatrix().RotatePart().RotateY(mouse.x*sped*deltaTime));
+		Rotate(frustum.WorldMatrix().RotatePart().RotateY(mouse.x * sped * deltaTime));
 
-		vec oldFront = (frustum.Front() * cos(mouse.y*sped*deltaTime) + frustum.Up() * sin(mouse.y*sped*deltaTime)).Normalized();
+		vec oldFront = (frustum.Front() * cos(mouse.y * sped * deltaTime) + frustum.Up() * sin(mouse.y * sped * deltaTime)).Normalized();
 		vec oldUp = frustum.WorldRight().Cross(oldFront);
 		frustum.SetFront(oldFront);
 		frustum.SetUp(oldUp);
@@ -192,7 +192,7 @@ update_status ModuleCamera::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleCamera::Rotate(float3x3 &rotation) {
+void ModuleCamera::Rotate(float3x3& rotation) {
 	vec oldFront = frustum.Front().Normalized();
 	frustum.SetFront(rotation.MulDir(oldFront));
 	vec oldUp = frustum.Up().Normalized();

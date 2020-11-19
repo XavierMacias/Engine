@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleModel.h"
 #include "ModuleTexture.h"
+#include "ModuleEditor.h"
 #include "Assimp/cimport.h"
 #include "Assimp/postprocess.h"
 
@@ -32,6 +33,9 @@ bool ModuleModel::CleanUp()
 	for (unsigned i = 0; i < materials.size(); ++i) {
 		App->texture->FreeTexture(materials[i]);
 	}
+	for (unsigned i = 0; i < meshes.size(); ++i) {
+		meshes[i].Free();
+	}
 	materials.clear();
 	meshes.clear();
 	return true;
@@ -40,6 +44,7 @@ bool ModuleModel::CleanUp()
 
 void ModuleModel::Load(const char* file_name) {
 	scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
+	App->editor->AddLog("\nAssimp LOG");
 	if (scene) {
 		LoadMaterials();
 		LoadMeshes();

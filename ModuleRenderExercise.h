@@ -13,6 +13,7 @@ public:
 	~ModuleRenderExercise();
 
 	bool Init();
+	bool Start();
 	update_status PreUpdate();
 	update_status Update();
 	update_status PostUpdate();
@@ -22,6 +23,5 @@ public:
 
 private:
 	void* context;
-	unsigned vbo;
 };
 

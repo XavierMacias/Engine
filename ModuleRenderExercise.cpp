@@ -41,7 +41,11 @@ bool ModuleRenderExercise::Init()
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	glEnable(GL_CULL_FACE); // Enable cull backward faces
 	glFrontFace(GL_CCW); // Front faces will be counter clockwise
+	
+	return true;
+}
 
+bool ModuleRenderExercise::Start() {
 	App->model->Load("BakerHouse.fbx");
 	return true;
 }
@@ -83,7 +87,6 @@ bool ModuleRenderExercise::CleanUp()
 	LOG("Destroying renderer");
 
 	//Destroy window
-	glDeleteBuffers(1, &vbo);
 	SDL_GL_DeleteContext(context);
 
 	return true;

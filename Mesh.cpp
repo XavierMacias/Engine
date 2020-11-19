@@ -23,17 +23,6 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	unsigned buffer_size = vertex_size * mesh->mNumVertices;
 	glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
 
-	/*unsigned position_size = sizeof(float) * 3 * mesh->mNumVertices;
-	glBufferSubData(GL_ARRAY_BUFFER, 0, position_size, mesh->mVertices);
-
-	unsigned uv_offset = position_size;
-	unsigned uv_size = sizeof(float) * 2 * mesh->mNumVertices;
-	float2* uvs = (float2*)(glMapBufferRange(GL_ARRAY_BUFFER, uv_offset, uv_size, GL_MAP_WRITE_BIT));
-
-	for (unsigned i = 0; i < mesh->mNumVertices; ++i)
-	{
-		uvs[i] = float2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
-	}*/
 	float* vertices = (float*)(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
 
 	for (unsigned i = 0; i < mesh->mNumVertices; ++i)
@@ -48,6 +37,7 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	num_vertices = mesh->mNumVertices;
 	material_index = mesh->mMaterialIndex;
+	
 }
 
 void Mesh::LoadEBO(const aiMesh* mesh)
@@ -68,6 +58,7 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 
 	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 	num_indices = mesh->mNumFaces * 3;
+	
 }
 
 void Mesh::CreateVAO()
@@ -106,4 +97,9 @@ void Mesh::Draw(const std::vector<unsigned>& model_textures)
 
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
+}
+
+void Mesh::Free() {
+	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ebo);
 }

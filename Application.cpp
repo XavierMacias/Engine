@@ -43,6 +43,9 @@ bool Application::Init()
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
 
+	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+		ret = (*it)->Start();
+
 	return ret;
 }
 
