@@ -4,6 +4,7 @@
 #include "ModuleEditor.h"
 #include "Assimp/cimport.h"
 #include "Assimp/postprocess.h"
+#include "Assimp/Importer.hpp"
 
 ModuleModel::ModuleModel()
 {
@@ -44,7 +45,6 @@ bool ModuleModel::CleanUp()
 
 void ModuleModel::Load(const char* file_name) {
 	scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
-	App->editor->AddLog("\nAssimp LOG");
 	if (scene) {
 		LoadMaterials();
 		LoadMeshes();

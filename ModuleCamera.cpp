@@ -169,6 +169,15 @@ void ModuleCamera::WheelMouse() {
 	}
 }
 
+void ModuleCamera::Focus() {
+	if (App->input->GetKey(SDL_SCANCODE_F)) {
+		position.x = 0;
+		position.y = 0;
+		position.z = 0;
+		frustum.SetPos(position);
+	}
+}
+
 // Called every draw update
 update_status ModuleCamera::Update()
 {
@@ -186,6 +195,7 @@ update_status ModuleCamera::Update()
 	Yaw();
 	RotateMouse();
 	WheelMouse();
+	Focus();
 
 	App->input->SetWheel(0);
 
@@ -197,6 +207,10 @@ void ModuleCamera::Rotate(float3x3& rotation) {
 	frustum.SetFront(rotation.MulDir(oldFront));
 	vec oldUp = frustum.Up().Normalized();
 	frustum.SetUp(rotation.MulDir(oldUp));
+}
+
+void ModuleCamera::SetFOV(float aspectRadio) {
+	frustum.SetHorizontalFovAndAspectRatio(frustum.HorizontalFov(), aspectRadio);
 }
 
 // Called before quitting

@@ -65,9 +65,46 @@ void ModuleEditor::ConfigurationWindow(int index) {
 
     ImGui::Begin("Configuration");
     ImGui::Text("Times per second");
-    ImGui::Text("Render: ");
-    ImGui::Text("Window: ");
-    ImGui::SetWindowSize({ 250,100 });
+    static bool fullscreen = false;
+    static bool border = false;
+    static bool resizable = true;
+    
+    // Window
+    if (ImGui::CollapsingHeader("Window")) {
+        //Brightness
+        static float brightness = 1.0f;
+        ImGui::SliderFloat("Brightness", &brightness, 0.0f, 1.0f);
+        App->window->SetBrightness(brightness);
+
+        //Width
+        static int width = SCREEN_WIDTH;
+        ImGui::SliderInt("Width", &width, 100, 1000);
+
+        //Height
+        static int height = SCREEN_HEIGHT;
+        ImGui::SliderInt("Height", &height, 100, 800);
+
+        App->window->SetWindowSize(width, height);
+
+        // Fullscreen
+        if (ImGui::Checkbox("Fullscreen", &fullscreen)) {
+            App->window->SetFlags(SDL_WINDOW_FULLSCREEN, fullscreen);
+        }
+
+        // Borderless
+        if (ImGui::Checkbox("Borderless", &border)) {
+            App->window->SetFlags(SDL_WINDOW_BORDERLESS, border);
+        }
+
+        // Resizable
+        if (ImGui::Checkbox("Resizable", &resizable)) {
+            App->window->SetFlags(SDL_WINDOW_RESIZABLE, resizable);
+        }
+        
+    }
+
+
+    ImGui::SetWindowSize({ 250,300 });
 
     focuseds[index] = ImGui::IsWindowFocused();
 

@@ -3,6 +3,7 @@
 #include "ModuleRenderExercise.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleTexture.h"
 #include "ModuleModel.h"
@@ -11,6 +12,7 @@
 #include "GL/glew.h"
 #include "MathGeoLib/Math/float4x4.h"
 #include "MathGeoLib/Math/float3x3.h"
+#include "assimp/cimport.h"
 
 ModuleRenderExercise::ModuleRenderExercise()
 {
@@ -20,6 +22,10 @@ ModuleRenderExercise::ModuleRenderExercise()
 // Destructor
 ModuleRenderExercise::~ModuleRenderExercise()
 {
+}
+
+void myCallback(const char* msg, char* userData) {
+	App->editor->AddLog(msg);
 }
 
 // Called before render is available
@@ -41,6 +47,10 @@ bool ModuleRenderExercise::Init()
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	glEnable(GL_CULL_FACE); // Enable cull backward faces
 	glFrontFace(GL_CCW); // Front faces will be counter clockwise
+
+	struct aiLogStream stream;
+	stream.callback = myCallback;
+	aiAttachLogStream(&stream);
 	
 	return true;
 }

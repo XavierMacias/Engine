@@ -35,6 +35,7 @@ update_status ModuleTexture::Update()
 unsigned ModuleTexture::Load(const char* file_name) {
 	
 	ILuint texid;
+	ILinfo info;
 
 	ilGenImages(1, &texid);
 	ilBindImage(texid);
@@ -52,6 +53,11 @@ unsigned ModuleTexture::Load(const char* file_name) {
 	{
 		LOG("ERROR");
 	}
+	iluGetImageInfo(&info);
+	if (info.Origin == IL_ORIGIN_UPPER_LEFT) {
+		iluFlipImage();
+	}
+
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
