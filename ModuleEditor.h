@@ -18,14 +18,19 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
-	void ConfigurationWindow(int index);
-	void Console(int index);
 	void AddLog(const char* fmt);
 	bool GetFocused();
 private:
+	void ConfigurationWindow();
+	void Console();
+	void About();
+	void Properties();
+
 	ImGuiTextBuffer buf;
 	bool scrollToBottom;
-	std::vector<bool> focuseds;
+	bool focusConfig, focusAbout, focusConsole, focusProp;
+	std::vector<float> fps_log;
+	int frames = 0;
 };
 
 #define NUM_EDITORS 2

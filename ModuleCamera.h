@@ -15,6 +15,7 @@ public:
 	~ModuleCamera();
 
 	bool Init();
+	bool Start();
 	update_status Update();
 	bool CleanUp();
 	void SetFOV(float aspectRadio);
@@ -31,6 +32,7 @@ private:
 	void RotateMouse();
 	void WheelMouse();
 	void Focus();
+	void OrbitVertical();
 	void Rotate(float3x3 &rotationMatrix);
 
 	Frustum frustum;

@@ -104,4 +104,5 @@ bool ModuleRenderExercise::CleanUp()
 
 void ModuleRenderExercise::WindowResized(unsigned width, unsigned height)
 {
+	App->camera->SetFOV(float(width) / float(height));
 }

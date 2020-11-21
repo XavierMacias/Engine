@@ -3,6 +3,7 @@
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
 #include "ModuleEditor.h"
+#include "ModuleModel.h"
 #include "SDL.h"
 #include "GL/glew.h"
 #include <chrono>
@@ -31,6 +32,13 @@ bool ModuleCamera::Init()
 	frustum.SetFront(float3::unitZ);
 	frustum.SetUp(float3::unitY);
 
+	return true;
+}
+
+bool ModuleCamera::Start() {
+	
+	position.z = 0 - 4*App->model->GetScale();
+	frustum.SetPos(position);
 	return true;
 }
 
@@ -140,7 +148,7 @@ void ModuleCamera::RotateMouse() {
 		sped *= 2;
 	}
 
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) && !App->editor->GetFocused()) {
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) && !App->editor->GetFocused()) {
 		iPoint mouse = App->input->GetMouseMotion();
 
 		Rotate(frustum.WorldMatrix().RotatePart().RotateY(mouse.x * sped * deltaTime));
@@ -173,8 +181,21 @@ void ModuleCamera::Focus() {
 	if (App->input->GetKey(SDL_SCANCODE_F)) {
 		position.x = 0;
 		position.y = 0;
-		position.z = 0;
+		position.z = 0 - 4 * App->model->GetScale();
 		frustum.SetPos(position);
+	}
+}
+
+void ModuleCamera::OrbitVertical() {
+	float sped = speed;
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
+		sped *= 2;
+	}
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) && App->input->GetKey(SDL_SCANCODE_LALT)) {
+		int x = frustum.Pos().x;
+		int y = frustum.Pos().y;
+		int z = frustum.Pos().z;
+		float distanceToFocus = sqrt(x * x + y * y + z * z);
 	}
 }
 
@@ -195,6 +216,7 @@ update_status ModuleCamera::Update()
 	Yaw();
 	RotateMouse();
 	WheelMouse();
+	OrbitVertical();
 	Focus();
 
 	App->input->SetWheel(0);

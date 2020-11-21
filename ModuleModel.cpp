@@ -54,6 +54,13 @@ void ModuleModel::Load(const char* file_name) {
 	}
 }
 
+float ModuleModel::GetScale() {
+	double factor;
+	scene->mMetaData->Get("UnitScaleFactor", factor);
+	LOG("FACTOR: %f", factor);
+	return factor;
+}
+
 void ModuleModel::LoadMaterials() {
 	aiString file;
 	//materials.reserve(scene->mNumMaterials);
@@ -98,7 +105,11 @@ int ModuleModel::GetVertices() {
 	return vertices;
 }
 
+int ModuleModel::GetMeshes() {
+	return scene->mNumMeshes;
+}
+
 int ModuleModel::GetTriangles() {
 
-	return GetVertices() / 3;
+	return GetVertices() / 5;
 }

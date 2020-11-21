@@ -17,7 +17,9 @@ public:
 	void Load(const char* file_name);
 	void Draw();
 	int GetVertices();
+	int GetMeshes();
 	int GetTriangles();
+	float GetScale();
 
 private:
 	void LoadMaterials();
