@@ -55,8 +55,8 @@ void ModuleModel::Load(const char* file_name) {
 }
 
 float ModuleModel::GetScale() {
-	double factor;
-	scene->mMetaData->Get("UnitScaleFactor", factor);
+	double factor = 1.0;
+	aiMetadata* meta = scene->mMetaData;
 	LOG("FACTOR: %f", factor);
 	return factor;
 }
@@ -69,8 +69,13 @@ void ModuleModel::LoadMaterials() {
 	{
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 		{
+			LOG("Search material in the fbx file\n");
 			materials.push_back(App->texture->Load(file.data));
 		}
+		//else {
+		//	LOG("Search material in the fbx directory\n");
+		//	materials.push_back(App->texture->Load("Cottage.png"));
+		//}
 	}
 }
 
@@ -95,21 +100,10 @@ void ModuleModel::Draw() {
 	}
 }
 
-int ModuleModel::GetVertices() {
-	int vertices = 0;
-	for (unsigned i = 0; i < scene->mNumMeshes; ++i)
-	{
-		vertices += scene->mMeshes[i]->mNumVertices;
-	}
-
-	return vertices;
+int ModuleModel::GetTextureWidth() {
+	return App->texture->GetWidth();
 }
 
-int ModuleModel::GetMeshes() {
-	return scene->mNumMeshes;
-}
-
-int ModuleModel::GetTriangles() {
-
-	return GetVertices() / 5;
+int ModuleModel::GetTextureHeight() {
+	return App->texture->GetHeight();
 }

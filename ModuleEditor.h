@@ -31,6 +31,7 @@ private:
 	bool focusConfig, focusAbout, focusConsole, focusProp;
 	std::vector<float> fps_log;
 	int frames = 0;
+	int w, h;
 };
 
 #define NUM_EDITORS 2

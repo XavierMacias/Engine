@@ -16,10 +16,14 @@ public:
 	bool CleanUp();
 	void Load(const char* file_name);
 	void Draw();
-	int GetVertices();
-	int GetMeshes();
-	int GetTriangles();
+	int GetVertices(int mesh) { return scene->mMeshes[mesh]->mNumVertices; }
+	int GetMeshes() { return scene->mNumMeshes; }
+	int GetFaces(int mesh) { return scene->mMeshes[mesh]->mNumFaces; }
 	float GetScale();
+	int GetNumMaterials() { return materials.size(); }
+	unsigned GetMaterial(int mat) { return materials[mat]; }
+	int GetTextureWidth();
+	int GetTextureHeight();
 
 private:
 	void LoadMaterials();

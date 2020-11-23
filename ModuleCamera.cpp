@@ -57,7 +57,6 @@ void ModuleCamera::Yaw() {
 		float3x3 rotationMatrix = frustum.WorldMatrix().RotatePart().RotateY(-sped);
 		Rotate(rotationMatrix);
 	}
-
 }
 
 void ModuleCamera::Pitch() {
@@ -195,7 +194,9 @@ void ModuleCamera::OrbitVertical() {
 		int x = frustum.Pos().x;
 		int y = frustum.Pos().y;
 		int z = frustum.Pos().z;
-		float distanceToFocus = sqrt(x * x + y * y + z * z);
+		//float distanceToFocus = sqrt(x * x + y * y + z * z);
+
+		//gluLookAt(x,y,z,0,0,0,0,1,0);
 	}
 }
 

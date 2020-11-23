@@ -14,5 +14,9 @@ public:
 	bool CleanUp();
 	unsigned Load(const char* file_name);
 	void FreeTexture(unsigned textID);
+	int GetWidth() { return width; }
+	int GetHeight() { return height; }
+private:
+	int width, height;
 };
 

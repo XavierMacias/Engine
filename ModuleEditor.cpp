@@ -44,6 +44,8 @@ update_status ModuleEditor::PreUpdate()
 // Called every draw update
 update_status ModuleEditor::Update()
 {
+    SDL_GetWindowSize(App->window->window, &w, &h);
+
     ImGuiIO& io = ImGui::GetIO();
     fps_log.push_back(io.Framerate);
     frames++;
@@ -111,40 +113,63 @@ void ModuleEditor::About() {
     ImGui::Text("Is an engine created by Xavier Macias");
     ImGui::Text("Please be good in the correction :)");
 
-    ImGui::End();
+    ImGui::SetWindowSize({ (float)(w / 2.3), (float)(h / 3.7) });
+    
     focusAbout = ImGui::IsWindowFocused();
+
+    ImGui::End();
 }
 
 void ModuleEditor::Properties() {
+
     ImGui::Begin("Properties");
 
     // Transformation
     if (ImGui::CollapsingHeader("Transformation")) {
         //Coords
-        ImGui::Text("X: %f", 2.0);
-        ImGui::Text("Y: %f", 2.0);
-        ImGui::Text("Z: %f", 2.0);
+        ImGui::Text("Front: %f %f %f", App->camera->getFront().x, App->camera->getFront().y, App->camera->getFront().z);
+        ImGui::Text("Up: %f %f %f", App->camera->getUp().x, App->camera->getUp().y, App->camera->getUp().z);
+        ImGui::Text("Position: %f %f %f", App->camera->getPosition().x, App->camera->getPosition().y, App->camera->getPosition().z);
     }
 
     // Geometry
     if (ImGui::CollapsingHeader("Geometry")) {
 
-        ImGui::Text("Num Vertices: %d", App->model->GetVertices());
-        ImGui::Text("Num Triangles: %d", App->model->GetTriangles());
+        // For every mesh, show vertices and faces
         ImGui::Text("Num Meshes: %d", App->model->GetMeshes());
+        ImGui::Text("Num Vertices:");
+        for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
+            ImGui::Text("Mesh %d: %d", i+1, App->model->GetVertices(i));
+        }
+        ImGui::Text("Num Faces:");
+        for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
+            ImGui::Text("Mesh %d: %d", i+1, App->model->GetFaces(i));
+            //ImGui::Image((ImTextureID)App->model->GetFaces(i), {2,2});
+        }
+        
     }
 
     // Texture
     if (ImGui::CollapsingHeader("Texture")) {
+        int textw = App->model->GetTextureWidth();
+        int texth = App->model->GetTextureHeight();
 
-        ImGui::Text("Texture Size: %f", 2.0);
+        ImGui::Text("Texture size: %d %d", textw, texth);
+        ImGui::Image((ImTextureID)App->model->GetMaterial(0), { (float)textw,(float)texth });
+
     }
+
+    ImGui::SetWindowSize({ (float)(w / 2),(float)(h / 1.6) });
     focusProp = ImGui::IsWindowFocused();
 
     ImGui::End();
 }
 
 void ModuleEditor::ConfigurationWindow() {
+
+    SDL_version compiled;
+
+    SDL_VERSION(&compiled);
     
     ImGui::Begin("Configuration");
 
@@ -196,9 +221,11 @@ void ModuleEditor::ConfigurationWindow() {
 
         ImGui::Text("CPUs: %d", SDL_GetCPUCount());
         ImGui::Text("RAM: %.2f GB", SDL_GetSystemRAM() / 1024.0f);
+        ImGui::Text("SDL version compiled: %d.%d.%d", compiled.major, compiled.minor, compiled.patch);
+        ImGui::Text("OpenGL version: %s", (char*)glGetString(GL_VERSION));
     }
-
-    ImGui::SetWindowSize({ 250,300 });
+    
+    ImGui::SetWindowSize({ (float)(w / 2.15), (float)(h / 1.2) });
 
     focusConfig = ImGui::IsWindowFocused();
 
@@ -212,6 +239,8 @@ void ModuleEditor::Console() {
         ImGui::SetScrollHere(1.0f);
     }
     scrollToBottom = false;
+
+    ImGui::SetWindowSize({ (float)w, (float)(h / 2.4) });
 
     focusConsole = ImGui::IsWindowFocused();
 

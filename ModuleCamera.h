@@ -21,6 +21,9 @@ public:
 	void SetFOV(float aspectRadio);
 	float4x4 getProjection() { return projectionGL; }
 	float4x4 getView() { return viewMatrix; }
+	float3 getPosition() { return position; }
+	float3 getUp() { return frustum.Up(); }
+	float3 getFront() { return frustum.Front(); }
 	
 private:
 
