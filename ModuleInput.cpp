@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleRenderExercise.h"
 #include "ModuleCamera.h"
 #include "SDL/include/SDL.h"
 
@@ -128,6 +129,11 @@ update_status ModuleInput::PreUpdate()
 			mouse_motion.y = event.motion.yrel / SCREEN_SIZE;
 			mouse.x = event.motion.x / SCREEN_SIZE;
 			mouse.y = event.motion.y / SCREEN_SIZE;
+			break;
+		case SDL_DROPFILE:
+			char *dropped_filedir = event.drop.file;
+			LOG(dropped_filedir);
+			App->exercise->LoadModel(dropped_filedir);
 			break;
 		}
 	}

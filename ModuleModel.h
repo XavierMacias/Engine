@@ -22,8 +22,8 @@ public:
 	float GetScale();
 	int GetNumMaterials() { return materials.size(); }
 	unsigned GetMaterial(int mat) { return materials[mat]; }
-	int GetTextureWidth();
-	int GetTextureHeight();
+	int GetTextureWidth(int i) { return widths[i]; }
+	int GetTextureHeight(int i) { return heights[i]; }
 
 private:
 	void LoadMaterials();
@@ -32,5 +32,7 @@ private:
 
 	std::vector<unsigned> materials;
 	std::vector<Mesh> meshes;
+	std::vector<int> widths;
+	std::vector<int> heights;
 };
 

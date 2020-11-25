@@ -39,6 +39,8 @@ bool ModuleModel::CleanUp()
 	}
 	materials.clear();
 	meshes.clear();
+	widths.clear();
+	heights.clear();
 	return true;
 
 }
@@ -71,6 +73,8 @@ void ModuleModel::LoadMaterials() {
 		{
 			LOG("Search material in the fbx file\n");
 			materials.push_back(App->texture->Load(file.data));
+			widths.push_back(App->texture->GetWidth());
+			heights.push_back(App->texture->GetHeight());
 		}
 		//else {
 		//	LOG("Search material in the fbx directory\n");
@@ -98,12 +102,4 @@ void ModuleModel::Draw() {
 	for (unsigned i = 0; i < meshes.size(); ++i) {
 		meshes[i].Draw(materials);
 	}
-}
-
-int ModuleModel::GetTextureWidth() {
-	return App->texture->GetWidth();
-}
-
-int ModuleModel::GetTextureHeight() {
-	return App->texture->GetHeight();
 }

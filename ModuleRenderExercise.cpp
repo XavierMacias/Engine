@@ -60,6 +60,27 @@ bool ModuleRenderExercise::Start() {
 	return true;
 }
 
+void ModuleRenderExercise::LoadModel(char* filename) {
+	if (getFileExt((std::string)filename) == "fbx") {
+		App->model->CleanUp();
+		App->model->Load(filename);
+		SDL_free(filename);
+	}
+	else {
+		LOG("This isn't a FBX file");
+	}
+}
+
+std::string ModuleRenderExercise::getFileExt(const std::string s) {
+
+	size_t i = s.rfind('.', s.length());
+	if (i != std::string::npos) {
+		return(s.substr(i + 1, s.length() - i));
+	}
+
+	return("");
+}
+
 update_status ModuleRenderExercise::PreUpdate()
 {
 	int w, h;
@@ -75,7 +96,6 @@ update_status ModuleRenderExercise::PreUpdate()
 // Called every draw update
 update_status ModuleRenderExercise::Update()
 {
-
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
 	App->draw->Draw(App->camera->getView(), App->camera->getProjection(), w, h);

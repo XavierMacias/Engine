@@ -151,11 +151,13 @@ void ModuleEditor::Properties() {
 
     // Texture
     if (ImGui::CollapsingHeader("Texture")) {
-        int textw = App->model->GetTextureWidth();
-        int texth = App->model->GetTextureHeight();
+        for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
+            int textw = App->model->GetTextureWidth(i);
+            int texth = App->model->GetTextureHeight(i);
 
-        ImGui::Text("Texture size: %d %d", textw, texth);
-        ImGui::Image((ImTextureID)App->model->GetMaterial(0), { (float)textw,(float)texth });
+            ImGui::Text("Texture %d size: %d %d", i+1, textw, texth);
+            ImGui::Image((ImTextureID)App->model->GetMaterial(i), { (float)textw,(float)texth });
+        }
 
     }
 
