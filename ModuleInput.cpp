@@ -132,7 +132,6 @@ update_status ModuleInput::PreUpdate()
 			break;
 		case SDL_DROPFILE:
 			char *dropped_filedir = event.drop.file;
-			LOG(dropped_filedir);
 			App->exercise->LoadModel(dropped_filedir);
 			break;
 		}

@@ -6,13 +6,13 @@
 #include "ModuleModel.h"
 #include "SDL.h"
 #include "GL/glew.h"
-#include <chrono>
 
 ModuleCamera::ModuleCamera()
 {
 	position = float3(0, 1, -2);
 	speed = 0.002;
-	oldTime = 0.0;
+	oldTime = 0.0f;
+	deltaTime = 0.0f;
 }
 
 // Destructor
@@ -48,12 +48,12 @@ void ModuleCamera::Yaw() {
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
 		sped *= 2;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_LEFT)) {
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) && !App->editor->GetFocused()) {
 		float3x3 rotationMatrix = frustum.WorldMatrix().RotatePart().RotateY(sped);
 		Rotate(rotationMatrix);
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT)) {
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) && !App->editor->GetFocused()) {
 		float3x3 rotationMatrix = frustum.WorldMatrix().RotatePart().RotateY(-sped);
 		Rotate(rotationMatrix);
 	}
@@ -66,14 +66,14 @@ void ModuleCamera::Pitch() {
 		sped *= 2;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_UP)) {
+	if (App->input->GetKey(SDL_SCANCODE_UP) && !App->editor->GetFocused()) {
 		vec oldFront = (frustum.Front() * cos(sped) + frustum.Up() * sin(sped)).Normalized();
 		vec oldUp = frustum.WorldRight().Cross(oldFront);
 		frustum.SetFront(oldFront);
 		frustum.SetUp(oldUp);
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_DOWN)) {
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) && !App->editor->GetFocused()) {
 		vec oldFront = (frustum.Front() * cos(-sped) + frustum.Up() * sin(-sped)).Normalized();
 		vec oldUp = frustum.WorldRight().Cross(oldFront);
 		frustum.SetFront(oldFront);
@@ -89,13 +89,13 @@ void ModuleCamera::MoveForward() {
 		sped *= 2;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_W)) {
+	if (App->input->GetKey(SDL_SCANCODE_W) && !App->editor->GetFocused()) {
 		frustum.Translate(frustum.Front() * sped);
 		position = frustum.Pos();
 		frustum.SetPos(position);
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_S)) {
+	if (App->input->GetKey(SDL_SCANCODE_S) && !App->editor->GetFocused()) {
 		frustum.Translate(frustum.Front() * -sped);
 		position = frustum.Pos();
 		frustum.SetPos(position);
@@ -110,13 +110,13 @@ void ModuleCamera::MoveLateral() {
 		sped *= 2;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_A)) {
+	if (App->input->GetKey(SDL_SCANCODE_A) && !App->editor->GetFocused()) {
 		frustum.Translate(frustum.WorldRight() * -sped);
 		position = frustum.Pos();
 		frustum.SetPos(position);
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_D)) {
+	if (App->input->GetKey(SDL_SCANCODE_D) && !App->editor->GetFocused()) {
 		frustum.Translate(frustum.WorldRight() * sped);
 		position = frustum.Pos();
 		frustum.SetPos(position);
@@ -130,12 +130,12 @@ void ModuleCamera::MoveUp() {
 		sped *= 2;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_Q)) {
+	if (App->input->GetKey(SDL_SCANCODE_Q) && !App->editor->GetFocused()) {
 		position.y += sped;
 		frustum.SetPos(position);
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_E)) {
+	if (App->input->GetKey(SDL_SCANCODE_E) && !App->editor->GetFocused()) {
 		position.y -= sped;
 		frustum.SetPos(position);
 	}
@@ -164,12 +164,12 @@ void ModuleCamera::WheelMouse() {
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
 		sped *= 2;
 	}
-	if (App->input->GetWheel() > 0) {
+	if (App->input->GetWheel() > 0 && !App->editor->GetFocused()) {
 		frustum.Translate(frustum.Front() * sped * 30);
 		position = frustum.Pos();
 		frustum.SetPos(position);
 	}
-	else if (App->input->GetWheel() < 0) {
+	else if (App->input->GetWheel() < 0 && !App->editor->GetFocused()) {
 		frustum.Translate(frustum.Front() * -sped * 30);
 		position = frustum.Pos();
 		frustum.SetPos(position);
@@ -177,7 +177,7 @@ void ModuleCamera::WheelMouse() {
 }
 
 void ModuleCamera::Focus() {
-	if (App->input->GetKey(SDL_SCANCODE_F)) {
+	if (App->input->GetKey(SDL_SCANCODE_F) && !App->editor->GetFocused()) {
 		position.x = 0;
 		position.y = 0;
 		position.z = 0 - 4 * App->model->GetScale();
@@ -185,18 +185,25 @@ void ModuleCamera::Focus() {
 	}
 }
 
-void ModuleCamera::OrbitVertical() {
+void ModuleCamera::Orbit() {
 	float sped = speed;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT)) {
 		sped *= 2;
 	}
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) && App->input->GetKey(SDL_SCANCODE_LALT)) {
-		int x = frustum.Pos().x;
-		int y = frustum.Pos().y;
-		int z = frustum.Pos().z;
-		//float distanceToFocus = sqrt(x * x + y * y + z * z);
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) && App->input->GetKey(SDL_SCANCODE_LALT) && !App->editor->GetFocused()) {
+		vec up = frustum.Up().Normalized();
+		vec right = frustum.WorldRight().Normalized();
 
-		//gluLookAt(x,y,z,0,0,0,0,1,0);
+		float3 camFocusVector = frustum.Pos();
+		float3x3 rotationUp = frustum.ViewMatrix().RotatePart().RotateAxisAngle(up, sped);
+		float3x3 rotationRight = frustum.ViewMatrix().RotatePart().RotateAxisAngle(right, sped);
+		
+		camFocusVector = camFocusVector * rotationUp;
+		camFocusVector = camFocusVector * rotationRight;
+
+		frustum.SetPos(camFocusVector);
+		float3x3::LookAt(frustum.Front(), -frustum.Pos(), frustum.Up(), float3::unitY);
+
 	}
 }
 
@@ -204,7 +211,7 @@ void ModuleCamera::OrbitVertical() {
 update_status ModuleCamera::Update()
 {
 	deltaTime = clock() - oldTime;
-	double fps = (1.0 / deltaTime) * 1000;
+	//double fps = (1.0 / deltaTime) * 1000;
 	oldTime = clock();
 
 	projectionGL = frustum.ProjectionMatrix();
@@ -217,7 +224,7 @@ update_status ModuleCamera::Update()
 	Yaw();
 	RotateMouse();
 	WheelMouse();
-	OrbitVertical();
+	Orbit();
 	Focus();
 
 	App->input->SetWheel(0);

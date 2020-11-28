@@ -46,12 +46,7 @@ update_status ModuleEditor::Update()
 {
     SDL_GetWindowSize(App->window->window, &w, &h);
 
-    ImGuiIO& io = ImGui::GetIO();
-    fps_log.push_back(io.Framerate);
-    frames++;
-    if (frames == 100) {
-        fps_log.clear();
-    }
+    fps_log.push_back(1/App->camera->getDeltaTime() * 1000);
 
     static bool config = false;
     static bool console = false;
@@ -144,7 +139,6 @@ void ModuleEditor::Properties() {
         ImGui::Text("Num Faces:");
         for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
             ImGui::Text("Mesh %d: %d", i+1, App->model->GetFaces(i));
-            //ImGui::Image((ImTextureID)App->model->GetFaces(i), {2,2});
         }
         
     }
@@ -176,8 +170,9 @@ void ModuleEditor::ConfigurationWindow() {
     ImGui::Begin("Configuration");
 
     //FPS Graph
-    ImGui::Text("FPS Graph");
-    ImGui::PlotHistogram("##framerate",&fps_log[0],fps_log.size(),0,"FPS",0.0f,100.0f,ImVec2(310,100));
+    ImGui::Separator();
+    char title[32]; sprintf(title,"Framerate: %.2f", fps_log[fps_log.size()-1]);
+    ImGui::PlotHistogram("##framerate",&fps_log[0],fps_log.size(),0,title,0.0f,100.0f,ImVec2(310,100));
 
     static bool fullscreen = false;
     static bool border = false;

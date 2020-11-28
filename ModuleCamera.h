@@ -24,6 +24,7 @@ public:
 	float3 getPosition() { return position; }
 	float3 getUp() { return frustum.Up(); }
 	float3 getFront() { return frustum.Front(); }
+	float getDeltaTime() { return deltaTime; }
 	
 private:
 
@@ -35,7 +36,7 @@ private:
 	void RotateMouse();
 	void WheelMouse();
 	void Focus();
-	void OrbitVertical();
+	void Orbit();
 	void Rotate(float3x3 &rotationMatrix);
 
 	Frustum frustum;

@@ -19,6 +19,7 @@ ModuleModel::~ModuleModel()
 // Called before render is available
 bool ModuleModel::Init()
 {
+	scene = nullptr;
 	return true;
 }
 
@@ -48,7 +49,7 @@ bool ModuleModel::CleanUp()
 void ModuleModel::Load(const char* file_name) {
 	scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene) {
-		LoadMaterials();
+		LoadMaterials(file_name);
 		LoadMeshes();
 	}
 	else {
@@ -63,29 +64,33 @@ float ModuleModel::GetScale() {
 	return factor;
 }
 
-void ModuleModel::LoadMaterials() {
+void ModuleModel::LoadMaterials(const char* model_path) {
 	aiString file;
-	//materials.reserve(scene->mNumMaterials);
 
 	for (unsigned i = 0; i < scene->mNumMaterials; ++i)
 	{
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 		{
-			LOG("Search material in the fbx file\n");
-			materials.push_back(App->texture->Load(file.data));
-			widths.push_back(App->texture->GetWidth());
-			heights.push_back(App->texture->GetHeight());
+			materials.push_back(App->texture->Load(file.data, model_path));
+			App->editor->AddLog("Texture loaded\n");
 		}
-		//else {
-		//	LOG("Search material in the fbx directory\n");
-		//	materials.push_back(App->texture->Load("Cottage.png"));
-		//}
+		else {
+			App->editor->AddLog("Difusse texture not found...\n");
+			materials.push_back(App->texture->Load("black.png", model_path)); // put a black texture to avoid the engine crashes
+		}
+		widths.push_back(App->texture->GetWidth());
+		heights.push_back(App->texture->GetHeight());
 	}
+}
+
+void ModuleModel::LoadTexture(const char* file) {
+	materials.push_back(App->texture->Load(file, file));
+	widths.push_back(App->texture->GetWidth());
+	heights.push_back(App->texture->GetHeight());
 }
 
 void ModuleModel::LoadMeshes() {
 	aiString file;
-	//meshes.reserve(scene->mNumMeshes);
 
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i)
 	{

@@ -15,6 +15,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void Load(const char* file_name);
+	void LoadTexture(const char* file_name);
 	void Draw();
 	int GetVertices(int mesh) { return scene->mMeshes[mesh]->mNumVertices; }
 	int GetMeshes() { return scene->mNumMeshes; }
@@ -26,7 +27,7 @@ public:
 	int GetTextureHeight(int i) { return heights[i]; }
 
 private:
-	void LoadMaterials();
+	void LoadMaterials(const char* model_path);
 	void LoadMeshes();
 	const aiScene* scene;
 

@@ -56,7 +56,7 @@ bool ModuleRenderExercise::Init()
 }
 
 bool ModuleRenderExercise::Start() {
-	App->model->Load("BakerHouse.fbx");
+	LoadModel("BakerHouse.fbx");
 	return true;
 }
 
@@ -66,8 +66,14 @@ void ModuleRenderExercise::LoadModel(char* filename) {
 		App->model->Load(filename);
 		SDL_free(filename);
 	}
+	else if (getFileExt((std::string)filename) == "png" || getFileExt((std::string)filename) == "dds") {
+		for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
+			App->texture->FreeTexture(App->model->GetMaterial(i));
+		}
+		App->model->LoadTexture(filename);
+	}
 	else {
-		LOG("This isn't a FBX file");
+		App->editor->AddLog("This isn't a FBX file");
 	}
 }
 
