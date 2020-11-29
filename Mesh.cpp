@@ -13,6 +13,7 @@ Mesh::Mesh()
 // Destructor
 Mesh::~Mesh()
 {
+	
 }
 
 void Mesh::LoadVBO(const aiMesh* mesh)

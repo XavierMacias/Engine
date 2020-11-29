@@ -12,19 +12,19 @@ class ModuleCamera : public Module
 {
 public:
 	ModuleCamera();
-	~ModuleCamera();
 
 	bool Init();
 	bool Start();
 	update_status Update();
 	bool CleanUp();
 	void SetFOV(float aspectRadio);
-	float4x4 getProjection() { return projectionGL; }
-	float4x4 getView() { return viewMatrix; }
-	float3 getPosition() { return position; }
-	float3 getUp() { return frustum.Up(); }
-	float3 getFront() { return frustum.Front(); }
-	float getDeltaTime() { return deltaTime; }
+	const float4x4 getProjection() { return projectionGL; }
+	const float4x4 getView() { return viewMatrix; }
+	const float3 getPosition() { return position; }
+	const float3 getUp() { return frustum.Up(); }
+	const float3 getFront() { return frustum.Front(); }
+	const float getDeltaTime() { return deltaTime; }
+	void Focus(bool newModel);
 	
 private:
 
@@ -35,7 +35,6 @@ private:
 	void MoveUp();
 	void RotateMouse();
 	void WheelMouse();
-	void Focus();
 	void Orbit();
 	void Rotate(float3x3 &rotationMatrix);
 

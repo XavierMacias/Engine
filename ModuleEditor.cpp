@@ -9,12 +9,7 @@
 
 ModuleEditor::ModuleEditor()
 {
-
-}
-
-// Destructor
-ModuleEditor::~ModuleEditor()
-{
+    focusAbout = focusConfig = focusConsole = focusProp = scrollToBottom = false;
 }
 
 // Called before render is available
@@ -25,7 +20,6 @@ bool ModuleEditor::Init()
     ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->exercise->GetContext());
     ImGui_ImplOpenGL3_Init();
     AddLog("Welcome to console");
-    focusAbout = focusConfig = focusConsole = focusProp = false;
 
 	return true;
 }
@@ -249,6 +243,7 @@ bool ModuleEditor::CleanUp()
 {
 	LOG("Destroying editor");
 
+    buf.clear();
     fps_log.clear();
     ImGui_ImplOpenGL3_Shutdown(); 
     ImGui_ImplSDL2_Shutdown();

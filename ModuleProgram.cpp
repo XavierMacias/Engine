@@ -7,11 +7,6 @@ ModuleProgram::ModuleProgram()
 
 }
 
-// Destructor
-ModuleProgram::~ModuleProgram()
-{
-}
-
 // Called before render is available
 bool ModuleProgram::Init()
 {
@@ -22,8 +17,8 @@ bool ModuleProgram::Init()
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
-	vtx_shader = CompileShader(GL_VERTEX_SHADER, LoadShaderSource("..\\Shaders\\VertexShader.glsl"));
-	frg_shader = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource("..\\Shaders\\FragmentShader.glsl"));
+	vtx_shader = CompileShader(GL_VERTEX_SHADER, LoadShaderSource(".\\Shaders\\VertexShader.glsl"));
+	frg_shader = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource(".\\Shaders\\FragmentShader.glsl"));
 
 	program_id = glCreateProgram();
 	glAttachShader(program_id, vtx_shader);

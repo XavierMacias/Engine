@@ -19,11 +19,6 @@ ModuleRenderExercise::ModuleRenderExercise()
 
 }
 
-// Destructor
-ModuleRenderExercise::~ModuleRenderExercise()
-{
-}
-
 void myCallback(const char* msg, char* userData) {
 	App->editor->AddLog(msg);
 }
@@ -64,7 +59,8 @@ void ModuleRenderExercise::LoadModel(char* filename) {
 	if (getFileExt((std::string)filename) == "fbx") {
 		App->model->CleanUp();
 		App->model->Load(filename);
-		SDL_free(filename);
+		App->camera->Focus(true);
+		//SDL_free(filename);
 	}
 	else if (getFileExt((std::string)filename) == "png" || getFileExt((std::string)filename) == "dds") {
 		for (int i = 0; i < App->model->GetNumMaterials(); ++i) {

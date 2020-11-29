@@ -13,7 +13,6 @@ class ModuleRenderExercise : public Module
 {
 public:
 	ModuleRenderExercise();
-	~ModuleRenderExercise();
 
 	bool Init();
 	bool Start();

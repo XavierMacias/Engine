@@ -5,15 +5,13 @@
 #include "Assimp/cimport.h"
 #include "Assimp/postprocess.h"
 #include "Assimp/Importer.hpp"
+#include "Assimp/aabb.h"
+#include "MathGeoLib/Geometry/AABB.h"
+#include "MathGeoLib/Geometry/Sphere.h"
 
 ModuleModel::ModuleModel()
 {
 
-}
-
-// Destructor
-ModuleModel::~ModuleModel()
-{
 }
 
 // Called before render is available
@@ -47,7 +45,7 @@ bool ModuleModel::CleanUp()
 }
 
 void ModuleModel::Load(const char* file_name) {
-	scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
+	scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes);
 	if (scene) {
 		LoadMaterials(file_name);
 		LoadMeshes();
@@ -55,13 +53,6 @@ void ModuleModel::Load(const char* file_name) {
 	else {
 		LOG("ERROR");
 	}
-}
-
-float ModuleModel::GetScale() {
-	double factor = 1.0;
-	aiMetadata* meta = scene->mMetaData;
-	LOG("FACTOR: %f", factor);
-	return factor;
 }
 
 void ModuleModel::LoadMaterials(const char* model_path) {
@@ -101,6 +92,36 @@ void ModuleModel::LoadMeshes() {
 		mesh.CreateVAO();
 		meshes.push_back(mesh);
 	}
+}
+
+float ModuleModel::ComputeCenter() {
+	AABB aabb = AABB();
+	float xmax, xmin, ymax, ymin, zmax, zmin;
+	xmax = xmin = ymax = ymin = zmax = zmin = 0;
+
+	xmax = scene->mMeshes[0]->mAABB.mMax.x;
+	xmin = scene->mMeshes[0]->mAABB.mMin.x;
+	ymax = scene->mMeshes[0]->mAABB.mMax.y;
+	ymin = scene->mMeshes[0]->mAABB.mMin.y;
+	zmax = scene->mMeshes[0]->mAABB.mMax.z;
+	zmin = scene->mMeshes[0]->mAABB.mMin.z;
+
+	for (unsigned i = 1; i < meshes.size(); ++i) {
+		if (xmax < scene->mMeshes[i]->mAABB.mMax.x) xmax = scene->mMeshes[i]->mAABB.mMax.x;
+		if (ymax < scene->mMeshes[i]->mAABB.mMax.y) ymax = scene->mMeshes[i]->mAABB.mMax.y;
+		if (zmax < scene->mMeshes[i]->mAABB.mMax.z) zmax = scene->mMeshes[i]->mAABB.mMax.z;
+		if (xmin > scene->mMeshes[i]->mAABB.mMin.x) xmin = scene->mMeshes[i]->mAABB.mMin.x;
+		if (ymin > scene->mMeshes[i]->mAABB.mMin.y) ymin = scene->mMeshes[i]->mAABB.mMin.y;
+		if (zmin > scene->mMeshes[i]->mAABB.mMin.z) zmin = scene->mMeshes[i]->mAABB.mMin.z;
+	}
+
+	aabb.maxPoint = vec(xmax,ymax,zmax);
+	aabb.minPoint = vec(xmin, ymin, zmin);
+
+	vec center = aabb.CenterPoint();
+
+	float bd = (aabb.MinimalEnclosingSphere()).Diameter() / (float)2.0f;
+	return bd;
 }
 
 void ModuleModel::Draw() {

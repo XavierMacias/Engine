@@ -108,16 +108,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./SDL/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./glew-2.1.0/include;./SDL/include;./DevIL/include;./Assimp/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>./glew-2.1.0/lib/Release/Win32;./DevIL/lib/x86/Release;./Assimp/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp-vc141-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,6 +151,7 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="Leak.h" />
     <ClInclude Include="MathGeoLib\Algorithm\GJK.h" />
     <ClInclude Include="MathGeoLib\Algorithm\GJK2D.h" />
     <ClInclude Include="MathGeoLib\Algorithm\Random\LCG.h" />
@@ -235,7 +235,6 @@
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleModel.h" />
     <ClInclude Include="ModuleProgram.h" />
-    <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleRenderExercise.h" />
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
@@ -300,7 +299,6 @@
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleModel.cpp" />
     <ClCompile Include="ModuleProgram.cpp" />
-    <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleRenderExercise.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />

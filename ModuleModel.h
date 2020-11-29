@@ -9,7 +9,6 @@ class ModuleModel : public Module
 {
 public:
 	ModuleModel();
-	~ModuleModel();
 
 	bool Init();
 	update_status Update();
@@ -20,16 +19,17 @@ public:
 	int GetVertices(int mesh) { return scene->mMeshes[mesh]->mNumVertices; }
 	int GetMeshes() { return scene->mNumMeshes; }
 	int GetFaces(int mesh) { return scene->mMeshes[mesh]->mNumFaces; }
-	float GetScale();
 	int GetNumMaterials() { return materials.size(); }
 	unsigned GetMaterial(int mat) { return materials[mat]; }
 	int GetTextureWidth(int i) { return widths[i]; }
 	int GetTextureHeight(int i) { return heights[i]; }
+	float ComputeCenter();
 
 private:
 	void LoadMaterials(const char* model_path);
 	void LoadMeshes();
 	const aiScene* scene;
+	//float boundaryRadius;
 
 	std::vector<unsigned> materials;
 	std::vector<Mesh> meshes;

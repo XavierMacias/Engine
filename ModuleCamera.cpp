@@ -15,11 +15,6 @@ ModuleCamera::ModuleCamera()
 	deltaTime = 0.0f;
 }
 
-// Destructor
-ModuleCamera::~ModuleCamera()
-{
-}
-
 // Called before render is available
 bool ModuleCamera::Init()
 {
@@ -37,7 +32,7 @@ bool ModuleCamera::Init()
 
 bool ModuleCamera::Start() {
 	
-	position.z = 0 - 4*App->model->GetScale();
+	position.z = 0 - 2*App->model->ComputeCenter();
 	frustum.SetPos(position);
 	return true;
 }
@@ -176,11 +171,13 @@ void ModuleCamera::WheelMouse() {
 	}
 }
 
-void ModuleCamera::Focus() {
-	if (App->input->GetKey(SDL_SCANCODE_F) && !App->editor->GetFocused()) {
+void ModuleCamera::Focus(bool newModel) {
+	if ((App->input->GetKey(SDL_SCANCODE_F) && !App->editor->GetFocused()) || newModel) {
 		position.x = 0;
-		position.y = 0;
-		position.z = 0 - 4 * App->model->GetScale();
+		position.y = App->model->ComputeCenter() / 2;
+		position.z = 0 - 2 * App->model->ComputeCenter();
+		frustum.SetFront(float3::unitZ);
+		frustum.SetUp(float3::unitY);
 		frustum.SetPos(position);
 	}
 }
@@ -211,7 +208,6 @@ void ModuleCamera::Orbit() {
 update_status ModuleCamera::Update()
 {
 	deltaTime = clock() - oldTime;
-	//double fps = (1.0 / deltaTime) * 1000;
 	oldTime = clock();
 
 	projectionGL = frustum.ProjectionMatrix();
@@ -225,7 +221,7 @@ update_status ModuleCamera::Update()
 	RotateMouse();
 	WheelMouse();
 	Orbit();
-	Focus();
+	Focus(false);
 
 	App->input->SetWheel(0);
 

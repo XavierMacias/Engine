@@ -6,12 +6,7 @@
 
 ModuleTexture::ModuleTexture()
 {
-
-}
-
-// Destructor
-ModuleTexture::~ModuleTexture()
-{
+	width = height = 0;
 }
 
 // Called before render is available
@@ -22,8 +17,6 @@ bool ModuleTexture::Init()
 
 	ilEnable(IL_ORIGIN_SET);
 	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-
-	width = height = 0;
 
 	return true;
 }
@@ -60,7 +53,7 @@ unsigned ModuleTexture::Load(const char* file_name, const char* model_path) {
 		if (success == IL_FALSE)
 		{
 			App->editor->AddLog("Search texture in the Texture folder\n");
-			std::string myPath("..\\Textures\\");
+			std::string myPath(".\\Textures\\");
 			myPath = myPath + std::string(file_name);
 			success = ilLoadImage(myPath.c_str());
 			if (success == IL_FALSE)
