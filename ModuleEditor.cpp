@@ -54,7 +54,7 @@ update_status ModuleEditor::Update()
         ImGui::MenuItem("Configuration Window", NULL, &config);
         ImGui::MenuItem("Console", NULL, &console);
         ImGui::MenuItem("Properties", NULL, &property);
-        ImGui::MenuItem("About", NULL, &about);
+        //ImGui::MenuItem("About", NULL, &about);
         if (ImGui::MenuItem("Git")) {
             ShellExecute(0, 0, "https://github.com/XavierMacias/Engine/tree/Assignment1", 0, 0, SW_SHOWNORMAL);
         }
@@ -75,9 +75,9 @@ update_status ModuleEditor::Update()
     if (property) {
         Properties();
     }
-    if (about) {
+    /*if (about) {
         About();
-    }
+    }*/
 
     ImGui::Render();
 

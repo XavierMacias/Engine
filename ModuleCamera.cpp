@@ -32,8 +32,8 @@ bool ModuleCamera::Init()
 
 bool ModuleCamera::Start() {
 	
-	position.z = 0 - 2*App->model->ComputeCenter();
-	frustum.SetPos(position);
+	//position.z = 0 - 2*App->model->ComputeCenter();
+	//frustum.SetPos(position);
 	return true;
 }
 

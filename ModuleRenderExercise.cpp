@@ -59,7 +59,7 @@ void ModuleRenderExercise::LoadModel(char* filename) {
 	if (getFileExt((std::string)filename) == "fbx") {
 		App->model->CleanUp();
 		App->model->Load(filename);
-		App->camera->Focus(true);
+		//App->camera->Focus(true);
 		//SDL_free(filename);
 	}
 	else if (getFileExt((std::string)filename) == "png" || getFileExt((std::string)filename) == "dds") {
