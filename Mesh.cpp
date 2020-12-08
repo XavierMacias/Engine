@@ -20,7 +20,7 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 {
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	unsigned vertex_size = (sizeof(float) * 5); // 3 vertex coords, 2 texture coords
+	unsigned vertex_size = (sizeof(float) * 8); // 3 vertex coords, 2 texture coords, 3 normals coords
 	unsigned buffer_size = vertex_size * mesh->mNumVertices;
 	glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
 
@@ -33,6 +33,9 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 		*(vertices++) = mesh->mVertices[i].z;
 		*(vertices++) = mesh->mTextureCoords[0][i].x;
 		*(vertices++) = mesh->mTextureCoords[0][i].y;
+		*(vertices++) = mesh->mNormals[i].x;
+		*(vertices++) = mesh->mNormals[i].y;
+		*(vertices++) = mesh->mNormals[i].z;
 	}
 
 	glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -71,9 +74,11 @@ void Mesh::CreateVAO()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (sizeof(float) * 5), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (sizeof(float) * 8), (void*)0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (sizeof(float) * 5), (void*)(sizeof(float) * 3));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (sizeof(float) * 8), (void*)(sizeof(float) * 3));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, (sizeof(float) * 8), (void*)(sizeof(float) * 5));
 
 	glBindVertexArray(0);
 }
@@ -94,6 +99,8 @@ void Mesh::Draw(const std::vector<unsigned>& model_textures)
 
 	glBindTexture(GL_TEXTURE_2D, model_textures[material_index]);
 	glUniform1i(glGetUniformLocation(program, "diffuse"), 0);
+	glUniform3f(glGetUniformLocation(program, "light_dir"), 1.0, 0.0, 0.0);
+	glUniform3f(glGetUniformLocation(program, "view_dir"), 0.0, 1.0, 0.0);
 	glBindVertexArray(vao);
 
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
