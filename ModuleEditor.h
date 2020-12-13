@@ -17,8 +17,11 @@ public:
 	update_status Update();	
 	bool CleanUp();
 	void AddLog(const char* fmt);
-	bool GetFocused();
-
+	bool GetFocused();	
+	void Project();	
+	void Hierarchy();
+	
+	
 private:
 	void ConfigurationWindow();
 	void Console();

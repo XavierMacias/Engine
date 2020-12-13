@@ -8,10 +8,7 @@ private:
 
 public:
 	Window();
-	void CreateWindow();
-
-
-
+	
 
 };
 

@@ -77,8 +77,7 @@ update_status ModuleInput::PreUpdate()
 
 		case SDL_MOUSEMOTION:
 			mouse_motion.x = event.motion.xrel;
-			mouse_motion.y = event.motion.yrel;
-			
+			mouse_motion.y = event.motion.yrel;			
 			break;
 
 		case SDL_MOUSEWHEEL:
@@ -106,7 +105,11 @@ update_status ModuleInput::PreUpdate()
 	}	
 	if (Rpressed)
 	{
-		App->camera->MouseMotionInput(mouse_motion.x, -mouse_motion.y);
+		App->camera->MouseMotionInput(mouse_motion.x, -mouse_motion.y);				
+	}
+	if (Lpressed)
+	{
+		App->camera->HandToolMovement(mouse_motion.x, -mouse_motion.y);
 	}
 	return UPDATE_CONTINUE;
 }

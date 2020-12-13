@@ -86,8 +86,8 @@ update_status ModuleCamera::Update()
 
 void ModuleCamera::MouseMotionInput(float xoffset, float yoffset)
 {
-	xoffset *= movementSpeed;
-	yoffset *= movementSpeed;
+	xoffset *= movementSpeed * 2;
+	yoffset *= movementSpeed * 2;
 
 	oldpitch = pitch;
 
@@ -151,7 +151,7 @@ void ModuleCamera::MovementSpeed()
 
 void ModuleCamera::WheelTransformation(int wheel)
 {
-	movementSpeed *= 2;
+	movementSpeed *= 3;
 	position += wheel * Front * movementSpeed;
 }
 
@@ -244,4 +244,13 @@ float ModuleCamera::CalculateFPS()
 	}
 
 	return FPS;
+}
+
+void ModuleCamera::HandToolMovement(float xoffset, float yoffset)
+{
+	if (HandTool)
+	{
+		position += -xoffset * Right * (movementSpeed/4);
+		position += -yoffset * Up * (movementSpeed / 4);
+	}
 }

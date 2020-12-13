@@ -30,7 +30,7 @@ update_status ModuleEditor::PreUpdate()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(App->window->window);
     ImGui::NewFrame();
-
+    
     ImGui::ShowDemoWindow();
 
     return UPDATE_CONTINUE;
@@ -44,9 +44,10 @@ update_status ModuleEditor::Update()
     //Disable IMGUI keys 
     io.KeyAlt = false;
     io.KeyShift = false;
+    io.KeyCtrl = false;
 
     //Docking
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
 
     ImGui::Begin("DockSpac", NULL, window_flags);           
 
@@ -55,9 +56,36 @@ update_status ModuleEditor::Update()
         ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
     }
-        
-    ImGui::End();
+    
+    if(ImGui::BeginMenuBar())
+        {
+            if (ImGui::Button("Hand Tool"))
+            {   
+                App->camera->HandTool = true;
+            }
+            if (ImGui::Button("Move Tool"))
+            {
+                App->camera->HandTool = false;
+            }
+            if (ImGui::Button("Start"))
+            {               
+                //Camera object, avoid to do changes
+            }
+            
+            if (ImGui::Button("Pause"))
+            {
 
+            }
+            if (ImGui::Button("Tick"))
+            {
+
+            }
+        }
+
+    ImGui::EndMenuBar();
+    ImGui::End();
+    Hierarchy();
+    Project();
     //Frambuffer
     //ImGui::Begin("Render");
 
@@ -94,6 +122,7 @@ update_status ModuleEditor::Update()
         ImGui::EndMenu();
     }
     ImGui::EndMainMenuBar();
+    
 
     if (show_app_config) { ConfigurationWindow(); }
     if (show_console) { Console(); }
@@ -123,7 +152,7 @@ void ModuleEditor::About() {
 
 void ModuleEditor::Properties() {
 
-    ImGui::Begin("Properties", &show_app_prop);
+    ImGui::Begin("Inspector", &show_app_prop);
 
     // Transformation
     if (ImGui::CollapsingHeader("Transformation")) {
@@ -336,4 +365,19 @@ void ModuleEditor::AddLog(const char* fmt)
 bool ModuleEditor::GetFocused() {
     return (focusAbout || focusConfig || focusConsole || focusProp);
 }
+
+//See assets folder, browser, etc
+void ModuleEditor::Project()
+{
+    ImGui::Begin("Project");
+    ImGui::End();
+}
+
+//GameObject Hierarchy
+void ModuleEditor::Hierarchy()
+{
+    ImGui::Begin("Hierarchy");
+    ImGui::End();
+}
+
 
