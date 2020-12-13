@@ -173,6 +173,9 @@
     <ClCompile Include="Window.cpp">
       <Filter>UI_Window</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleTimer.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -459,6 +462,9 @@
     <ClInclude Include="Window.h">
       <Filter>UI_Window</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleTimer.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
@@ -493,6 +499,9 @@
     </Filter>
     <Filter Include="UI_Window">
       <UniqueIdentifier>{c8a869d5-6585-463e-a960-766200874457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{b027c1a5-953a-47b9-af55-f916654ad6af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
