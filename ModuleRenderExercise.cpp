@@ -14,7 +14,7 @@
 #include "MathGeoLib/Math/float3x3.h"
 #include "assimp/cimport.h"
 
-ModuleRenderExercise::ModuleRenderExercise()
+ModuleRenderExercise::ModuleRenderExercise()	
 {
 
 }
@@ -48,6 +48,7 @@ bool ModuleRenderExercise::Init()
 	aiAttachLogStream(&stream);
 	
 	return true;
+	
 }
 
 bool ModuleRenderExercise::Start() {
@@ -89,18 +90,29 @@ update_status ModuleRenderExercise::PreUpdate()
 
 	SDL_GetWindowSize(App->window->window, &w, &h);
 	glViewport(0, 0, w, h);
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	background.x = App->editor->bGround[0];
+	background.y = App->editor->bGround[1];
+	background.z = App->editor->bGround[2];
+	background.w = App->editor->bGround[3];
+
+	glClearColor(background[0], background[1], background[2], background[3]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 	return UPDATE_CONTINUE;
 }
 
 // Called every draw update
 update_status ModuleRenderExercise::Update()
-{
+{	
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
-	App->draw->Draw(App->camera->getView(), App->camera->getProjection(), w, h);
+
+	grid.x = App->editor->gridColor[0];
+	grid.y = App->editor->gridColor[1];
+	grid.z = App->editor->gridColor[2];
+
+	App->draw->Draw(App->camera->setViewMatrix(), App->camera->setProjectionMatrix(), w, h, grid);
 
 	App->model->Draw();
 
@@ -127,4 +139,34 @@ bool ModuleRenderExercise::CleanUp()
 void ModuleRenderExercise::WindowResized(unsigned width, unsigned height)
 {
 	App->camera->SetFOV(float(width) / float(height));
+}
+
+void ModuleRenderExercise::FrameBuffer()
+{
+	//Frame buffer object
+	unsigned int framebuffer;
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+	//Texture color buffer
+	unsigned int textureColorbuffer;
+	glGenTextures(1, &textureColorbuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+	//Render buffer object
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);				
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);	
+																									
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		LOG("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 }

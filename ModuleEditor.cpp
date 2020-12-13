@@ -20,7 +20,8 @@ bool ModuleEditor::Init()
     ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->exercise->GetContext());
     ImGui_ImplOpenGL3_Init();
     AddLog("Welcome to console");
-
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    
 	return true;
 }
 
@@ -30,7 +31,7 @@ update_status ModuleEditor::PreUpdate()
     ImGui_ImplSDL2_NewFrame(App->window->window);
     ImGui::NewFrame();
 
-    //ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
 
     return UPDATE_CONTINUE;
 }
@@ -38,22 +39,50 @@ update_status ModuleEditor::PreUpdate()
 // Called every draw update
 update_status ModuleEditor::Update()
 {
-    SDL_GetWindowSize(App->window->window, &w, &h);
+    ImGuiIO& io = ImGui::GetIO();
 
-    fps_log.push_back(1/App->camera->getDeltaTime() * 1000);
+    //Disable IMGUI keys 
+    io.KeyAlt = false;
+    io.KeyShift = false;
 
-    static bool config = false;
-    static bool console = false;
-    static bool about = false;
-    static bool property = false;
+    //Docking
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar;
+
+    ImGui::Begin("DockSpac", NULL, window_flags);           
+
+    if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+    {
+        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+    }
+        
+    ImGui::End();
+
+    //Frambuffer
+    //ImGui::Begin("Render");
+
+    //ImTextureID my_tex_id = io.Fonts->TexID;
+    //float my_tex_w = 800;
+    //float my_tex_h =600;
+    //    
+    //ImVec2 uv_min = ImVec2(0.0f, 0.0f);                 // Top-left
+    //ImVec2 uv_max = ImVec2(1.0f, 1.0f);                 // Lower-right
+    //ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);   // No tint
+    //ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // 50% opaque white
+    //ImGui::Image((ImTextureID)App->exercise->textureColorbuffer, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col);
+
+    //ImGui::End();
+        
+
     // MENU BAR
     ImGui::BeginMainMenuBar();
 
     if (ImGui::BeginMenu("Help")) {
 
-        ImGui::MenuItem("Configuration Window", NULL, &config);
-        ImGui::MenuItem("Console", NULL, &console);
-        ImGui::MenuItem("Properties", NULL, &property);
+        ImGui::MenuItem("Configuration Window", NULL, &show_app_config);
+        ImGui::MenuItem("Console", NULL, &show_console);
+        ImGui::MenuItem("Properties", NULL, &show_app_prop);
+        ImGui::MenuItem("About", NULL, &show_app_about);
         //ImGui::MenuItem("About", NULL, &about);
         if (ImGui::MenuItem("Git")) {
             ShellExecute(0, 0, "https://github.com/XavierMacias/Engine/tree/Assignment1", 0, 0, SW_SHOWNORMAL);
@@ -66,18 +95,10 @@ update_status ModuleEditor::Update()
     }
     ImGui::EndMainMenuBar();
 
-    if (config) {
-        ConfigurationWindow();
-    }
-    if (console) {
-        Console();
-    }
-    if (property) {
-        Properties();
-    }
-    /*if (about) {
-        About();
-    }*/
+    if (show_app_config) { ConfigurationWindow(); }
+    if (show_console) { Console(); }
+    if (show_app_prop) { Properties();}
+    if (show_app_about) { About(); }
 
     ImGui::Render();
 
@@ -85,13 +106,9 @@ update_status ModuleEditor::Update()
     ImGui::RenderPlatformWindowsDefault();
     
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+        
+    
 	return UPDATE_CONTINUE;
-}
-
-update_status ModuleEditor::PostUpdate()
-{
-    return UPDATE_CONTINUE;
 }
 
 void ModuleEditor::About() {
@@ -99,26 +116,21 @@ void ModuleEditor::About() {
     ImGui::Begin("About");
 
     ImGui::Text("This is Engenius");
-    ImGui::Text("Is an engine created by Xavier Macias");
-    ImGui::Text("Please be good in the correction :)");
-
-    ImGui::SetWindowSize({ (float)(w / 2.3), (float)(h / 3.7) });
+    ImGui::Text("Is an engine created by Xavier Macias and Rober Gil");
     
-    focusAbout = ImGui::IsWindowFocused();
-
     ImGui::End();
 }
 
 void ModuleEditor::Properties() {
 
-    ImGui::Begin("Properties");
+    ImGui::Begin("Properties", &show_app_prop);
 
     // Transformation
     if (ImGui::CollapsingHeader("Transformation")) {
         //Coords
         ImGui::Text("Front: %f %f %f", App->camera->getFront().x, App->camera->getFront().y, App->camera->getFront().z);
         ImGui::Text("Up: %f %f %f", App->camera->getUp().x, App->camera->getUp().y, App->camera->getUp().z);
-        ImGui::Text("Position: %f %f %f", App->camera->getPosition().x, App->camera->getPosition().y, App->camera->getPosition().z);
+        ImGui::Text("Right: %f %f %f", App->camera->getRight().x, App->camera->getRight().y, App->camera->getRight().z);
     }
 
     // Geometry
@@ -161,12 +173,66 @@ void ModuleEditor::ConfigurationWindow() {
 
     SDL_VERSION(&compiled);
     
-    ImGui::Begin("Configuration");
+    ImGui::Begin("Configuration", &show_app_config);
+
+    static char engine_name[12] = TITLE;
+    static char organization[18] = "UPC BarcelonaTECH";
+    static float FPS[100] = {};
+    static float millisecond[100] = {};
+    static int index = 0;
+    static double refresh_time = 0.0;
 
     //FPS Graph
     ImGui::Separator();
-    char title[32]; sprintf(title,"Framerate: %.2f", fps_log[fps_log.size()-1]);
-    ImGui::PlotHistogram("##framerate",&fps_log[0],fps_log.size(),0,title,0.0f,100.0f,ImVec2(310,100));
+    if (ImGui::CollapsingHeader("Application"))
+    {
+        static bool animate = true;
+        ImGui::Checkbox("Animate", &animate);
+
+        ImGui::InputText("Engine", engine_name, IM_ARRAYSIZE(engine_name));
+        ImGui::InputText("Organization", organization, IM_ARRAYSIZE(organization));
+
+        if (!animate || refresh_time == 0.0)
+        {
+            refresh_time = ImGui::GetTime();
+        }
+
+        while (refresh_time < ImGui::GetTime())
+        {
+            FPS[index] = App->camera->FPS;
+
+            millisecond[index] = App->camera->frameTime;
+
+            refresh_time += 1.0f / 60.0f;
+            if (index < IM_ARRAYSIZE(FPS))
+            {
+                ++index;
+            }
+            else
+            {
+                index = 0;
+            }
+        }
+
+        float FPSaverage = 0.0f;
+        float MSaverage = 0.0f;
+
+        for (int n = 0; n < IM_ARRAYSIZE(FPS); ++n)
+        {
+            FPSaverage += FPS[n];
+            MSaverage += millisecond[n];
+        }
+
+        FPSaverage /= (float)IM_ARRAYSIZE(FPS);
+        MSaverage /= (float)IM_ARRAYSIZE(millisecond);
+
+
+        char title[25];
+        sprintf(title, "Framerate %.1f", FPSaverage);
+        ImGui::PlotHistogram("##framerate", FPS, IM_ARRAYSIZE(FPS), 0, title, 0.0f, 100.0f, ImVec2(310, 100.0f));
+        sprintf(title, "Milliseconds %.1f", MSaverage);
+        ImGui::PlotHistogram("##milliseconds", millisecond, IM_ARRAYSIZE(millisecond), 0, title, 0.0f, 40.0f, ImVec2(310, 100.0f));
+    }
 
     static bool fullscreen = false;
     static bool border = false;
@@ -203,10 +269,14 @@ void ModuleEditor::ConfigurationWindow() {
         // Resizable
         if (ImGui::Checkbox("Resizable", &resizable)) {
             App->window->SetFlags(SDL_WINDOW_RESIZABLE, resizable);
-        }
-        
+        }        
     }
 
+    if (ImGui::CollapsingHeader("Render"))
+    {
+        ImGui::SliderFloat3("Grid color", gridColor, 0.0f, 1.0f);
+        ImGui::SliderFloat4("Background color", bGround, 0.0f, 1.0f);
+    }
     // Info
     if (ImGui::CollapsingHeader("Information")) {
 
@@ -224,7 +294,7 @@ void ModuleEditor::ConfigurationWindow() {
 }
 
 void ModuleEditor::Console() {
-    ImGui::Begin("Console");
+    ImGui::Begin("Console", &show_console);
     ImGui::TextUnformatted(buf.begin());
     if (scrollToBottom) {
         ImGui::SetScrollHere(1.0f);
@@ -243,11 +313,13 @@ bool ModuleEditor::CleanUp()
 {
 	LOG("Destroying editor");
 
-    buf.clear();
-    fps_log.clear();
+    buf.clear();    
     ImGui_ImplOpenGL3_Shutdown(); 
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
+
+    delete[] gridColor;
+    delete[]bGround;
 
 	return true;
 }
@@ -264,3 +336,4 @@ void ModuleEditor::AddLog(const char* fmt)
 bool ModuleEditor::GetFocused() {
     return (focusAbout || focusConfig || focusConsole || focusProp);
 }
+
