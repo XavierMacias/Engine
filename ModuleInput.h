@@ -2,27 +2,10 @@
 #define __MODULEINPUT_H__
 
 #include "Module.h"
-#include "Point.h"
-
+#include "MathGeoLib/Math/float2.h"
 #include "SDL/include/SDL_scancode.h"
 
-#define NUM_MOUSE_BUTTONS 5
-
-enum EventWindow
-{
-	WE_QUIT = 0,
-	WE_HIDE = 1,
-	WE_SHOW = 2,
-	WE_COUNT
-};
-
-enum KeyState
-{
-	KEY_IDLE = 0,
-	KEY_DOWN,
-	KEY_REPEAT,
-	KEY_UP
-};
+typedef unsigned __int8 Uint8;
 
 class ModuleInput : public Module
 {
@@ -46,32 +29,15 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Check key states (includes mouse and joy buttons)
-	KeyState GetKey(int id) const
-	{
-		return keyboard[id];
-	}
+	bool CheckKey(SDL_Scancode key);
 
-	KeyState GetMouseButtonDown(int id) const
-	{
-		return mouse_buttons[id - 1];
-	}
-
-	// Check for window events last frame
-	bool GetWindowEvent(EventWindow code) const;
-	// Get mouse / axis position
-	const iPoint& GetMouseMotion() const;
-	const iPoint& GetMousePosition() const;
-	const int GetWheel() { return wheel; }
-	void SetWheel(const int w) { wheel = w; }
-
-private:
-	bool		windowEvents[WE_COUNT];
-	KeyState* keyboard;
-	KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
-	iPoint mouse_motion;
-	iPoint mouse;
-	int wheel;
+public:
+	int wheel;	
+	bool Lpressed = false;
+	bool Rpressed = false;	
+	
+private:	
+	const Uint8* keyboard = NULL;	
 };
 
 #endif // __MODULEINPUT_H__

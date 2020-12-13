@@ -2,8 +2,13 @@
 #include "Module.h"
 #include "Globals.h"
 
+#include "MathGeoLib/Math/float3.h"
+#include "MathGeoLib/Math/float4.h"
+
 #include <iostream>
 #include <string>
+
+#include "GL/glew.h"
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -24,9 +29,21 @@ public:
 	void LoadModel(char* filename);
 	void* GetContext() { return context; }
 
-private:
-	std::string getFileExt(const std::string s);
+	void FrameBuffer();
 
+	
+
+public:
+	
+	float3 grid;
+	float4 background;
+
+private:
+	std::string getFileExt(const std::string s);	
 	void* context;
+
+public:
+	unsigned int framebuffer;
+	unsigned int textureColorbuffer;
 };
 

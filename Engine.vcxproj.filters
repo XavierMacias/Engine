@@ -158,7 +158,21 @@
     <ClCompile Include="ModuleModel.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModuleDebugDraw.cpp" />
-    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GO_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialComponent.cpp">
+      <Filter>GO_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>GO_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
+      <Filter>GO_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>UI_Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -427,7 +441,24 @@
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="ModuleDebugDraw.h" />
     <ClInclude Include="Leak.h" />
-    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Component.h">
+      <Filter>GO_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GO_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialComponent.h">
+      <Filter>GO_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshComponent.h">
+      <Filter>GO_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>GO_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>UI_Window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
@@ -456,6 +487,12 @@
     </Filter>
     <Filter Include="Textures">
       <UniqueIdentifier>{adb0003e-8dfd-439a-b37a-adb8a03a0037}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GO_Components">
+      <UniqueIdentifier>{505b026f-43f0-418b-a987-8d47f183de61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI_Window">
+      <UniqueIdentifier>{c8a869d5-6585-463e-a960-766200874457}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
