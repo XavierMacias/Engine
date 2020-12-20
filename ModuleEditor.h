@@ -38,6 +38,8 @@ private:
 public:
 	float* gridColor{ new float[3]{1.000000f, 0.647059f, 0.000000f} };
 	float* bGround{ new float[4]{0.1f, 0.1f, 0.1f, 0.1f } };
+	float* ambient_color{ new float[3]{0.2f, 0.2f, 0.2f } };
+	float* light_color{ new float[3]{1.0f, 1.0f, 1.0f } };
 };
 
 #define NUM_EDITORS 2

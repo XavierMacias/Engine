@@ -2,6 +2,7 @@
 #include "Assimp/mesh.h"
 #include "Application.h"
 #include "ModuleProgram.h"
+#include "ModuleEditor.h"
 #include "ModuleCamera.h"
 
 class Mesh

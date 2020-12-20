@@ -26,6 +26,7 @@ public:
 	const float3 getUp() { return frustum.Up(); }
 	const float3 getFront() { return frustum.Front(); }	
 	const float3 getRight() { return Right; }
+	const float3 getPos() { return position; }
 	
 
 	void Focus(bool newModel);

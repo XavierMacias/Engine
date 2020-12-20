@@ -276,6 +276,8 @@ void ModuleEditor::ConfigurationWindow() {
     {
         ImGui::SliderFloat3("Grid color", gridColor, 0.0f, 1.0f);
         ImGui::SliderFloat4("Background color", bGround, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Ambient color", ambient_color, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Light color", light_color, 0.0f, 1.0f);
     }
     // Info
     if (ImGui::CollapsingHeader("Information")) {
@@ -320,6 +322,7 @@ bool ModuleEditor::CleanUp()
 
     delete[] gridColor;
     delete[]bGround;
+    delete[]ambient_color;
 
 	return true;
 }

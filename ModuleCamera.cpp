@@ -66,7 +66,7 @@ update_status ModuleCamera::Update()
 	glLoadMatrixf(*(setViewMatrix().v));
 
 	MovementSpeed();
-	WASD();	
+	WASD();
 	Orbit();
 	Focus(false);
 
