@@ -37,9 +37,10 @@ public:
 	void WheelTransformation(int wheel);
 	void Orbit();
 	float CalculateFPS();
+	void HandToolMovement(float xoffset, float yoffset);
+
 	
 private:	
-
 	Frustum frustum;
 	float3 position;	
 	float3 Front{ float3::unitZ };
@@ -65,5 +66,7 @@ public:
 	float MAX_FPS;
 	float deltaTime = 0.0f;
 
+public:
+	bool HandTool{ false };
 };
 

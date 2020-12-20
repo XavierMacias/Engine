@@ -47,6 +47,8 @@ bool ModuleRenderExercise::Init()
 	stream.callback = myCallback;
 	aiAttachLogStream(&stream);
 	
+	CreateFrameBuffer();
+
 	return true;
 	
 }
@@ -85,20 +87,7 @@ std::string ModuleRenderExercise::getFileExt(const std::string s) {
 }
 
 update_status ModuleRenderExercise::PreUpdate()
-{
-	int w, h;
-
-	SDL_GetWindowSize(App->window->window, &w, &h);
-	glViewport(0, 0, w, h);
-
-	background.x = App->editor->bGround[0];
-	background.y = App->editor->bGround[1];
-	background.z = App->editor->bGround[2];
-	background.w = App->editor->bGround[3];
-
-	glClearColor(background[0], background[1], background[2], background[3]);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+{		
 	return UPDATE_CONTINUE;
 }
 
@@ -112,9 +101,23 @@ update_status ModuleRenderExercise::Update()
 	grid.y = App->editor->gridColor[1];
 	grid.z = App->editor->gridColor[2];
 
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+	glEnable(GL_DEPTH_TEST); 
+	background.x = App->editor->bGround[0];
+	background.y = App->editor->bGround[1];
+	background.z = App->editor->bGround[2];
+	background.w = App->editor->bGround[3];
+
+	glClearColor(background[0], background[1], background[2], background[3]);
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	App->draw->Draw(App->camera->setViewMatrix(), App->camera->setProjectionMatrix(), w, h, grid);
 
 	App->model->Draw();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	return UPDATE_CONTINUE;
 }
@@ -141,17 +144,15 @@ void ModuleRenderExercise::WindowResized(unsigned width, unsigned height)
 	App->camera->SetFOV(float(width) / float(height));
 }
 
-void ModuleRenderExercise::FrameBuffer()
+void ModuleRenderExercise::CreateFrameBuffer()
 {
-	//Frame buffer object
-	unsigned int framebuffer;
+	//Frame buffer object	
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-	//Texture color buffer
-	unsigned int textureColorbuffer;
+	//Texture color buffer	
 	glGenTextures(1, &textureColorbuffer);
-	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

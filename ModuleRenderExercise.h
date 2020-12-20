@@ -29,21 +29,19 @@ public:
 	void LoadModel(char* filename);
 	void* GetContext() { return context; }
 
-	void FrameBuffer();
+	void CreateFrameBuffer();
 
+	//Framebuffer
+	unsigned int framebuffer;
+	unsigned int textureColorbuffer;
 	
 
-public:
-	
+public:	
 	float3 grid;
 	float4 background;
 
 private:
 	std::string getFileExt(const std::string s);	
 	void* context;
-
-public:
-	unsigned int framebuffer;
-	unsigned int textureColorbuffer;
 };
 
