@@ -48,7 +48,6 @@ bool ModuleProgram::Init()
 // Called every draw update
 update_status ModuleProgram::Update()
 {
-
 	return UPDATE_CONTINUE;
 }
 

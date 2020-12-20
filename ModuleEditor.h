@@ -36,7 +36,21 @@ private:
 	bool show_console{ true };
 	bool show_app_prop{ true };
 	bool show_app_config{ true };
-	bool show_app_about{ false };		
+	bool show_app_about{ false };	
+
+	//Open Collapsing header
+	bool open_transformation{ false };
+	bool open_geometry{ false };
+	bool open_texture{ false };
+	bool open_camera{ false };
+	
+	//Meshes
+	char* meshName{"BakerHouse"};
+
+	//Temporal 
+	float position[3]{ 0.0f, 0.0f, 0.0f };
+	float rotation[3]{ 0.0f, 0.0f, 0.0f };
+	float scale[3]{ 0.0f, 0.0f, 0.0f };
 
 public:
 	float* gridColor{ new float[3]{1.000000f, 0.647059f, 0.000000f} };

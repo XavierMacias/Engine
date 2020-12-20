@@ -29,8 +29,8 @@ update_status ModuleEditor::PreUpdate()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(App->window->window);
-    ImGui::NewFrame();
-    
+    /*ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;*/
+    ImGui::NewFrame();    
     ImGui::ShowDemoWindow();
 
     return UPDATE_CONTINUE;
@@ -46,17 +46,34 @@ update_status ModuleEditor::Update()
     io.KeyShift = false;
     io.KeyCtrl = false;
 
-    //Docking
+    int w, h;
+   
+    //Docking window
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
 
     ImGui::Begin("DockSpac", NULL, window_flags);           
-
+    SDL_GetWindowSize(App->window->window, &w, &h);
+    ImGui::SetWindowSize({ static_cast<float>(w), static_cast<float>(h) });
     if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
     {
         ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
     }
-    
+
+    if (ImGui::Begin("Scene"))
+    {        
+        ImVec2 window_size = ImVec2{ ImGui::GetWindowWidth() + 10, ImGui::GetWindowHeight() - 35};
+        ImGui::Image(ImTextureID(App->exercise->textureColorbuffer), window_size);
+
+        ImGui::End();
+
+    }
+
+    if (ImGui::Begin("Game"))
+    {        
+        ImGui::End();
+    }
+        
     if(ImGui::BeginMenuBar())
         {
             if (ImGui::Button("Hand Tool"))
@@ -86,22 +103,7 @@ update_status ModuleEditor::Update()
     ImGui::End();
     Hierarchy();
     Project();
-    //Frambuffer
-    //ImGui::Begin("Render");
-
-    //ImTextureID my_tex_id = io.Fonts->TexID;
-    //float my_tex_w = 800;
-    //float my_tex_h =600;
-    //    
-    //ImVec2 uv_min = ImVec2(0.0f, 0.0f);                 // Top-left
-    //ImVec2 uv_max = ImVec2(1.0f, 1.0f);                 // Lower-right
-    //ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);   // No tint
-    //ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // 50% opaque white
-    //ImGui::Image((ImTextureID)App->exercise->textureColorbuffer, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col);
-
-    //ImGui::End();
-        
-
+          
     // MENU BAR
     ImGui::BeginMainMenuBar();
 
@@ -120,9 +122,8 @@ update_status ModuleEditor::Update()
         }
         
         ImGui::EndMenu();
-    }
-    ImGui::EndMainMenuBar();
-    
+    }   
+    ImGui::EndMainMenuBar();    
 
     if (show_app_config) { ConfigurationWindow(); }
     if (show_console) { Console(); }
@@ -145,7 +146,7 @@ void ModuleEditor::About() {
     ImGui::Begin("About");
 
     ImGui::Text("This is Engenius");
-    ImGui::Text("Is an engine created by Xavier Macias and Rober Gil");
+    ImGui::Text("It's an engine created by Xavier Macias and Rober Gil");
     
     ImGui::End();
 }
@@ -153,17 +154,38 @@ void ModuleEditor::About() {
 void ModuleEditor::Properties() {
 
     ImGui::Begin("Inspector", &show_app_prop);
-
+    
     // Transformation
-    if (ImGui::CollapsingHeader("Transformation")) {
+    if (ImGui::CollapsingHeader("Transformation", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) { 
         //Coords
-        ImGui::Text("Front: %f %f %f", App->camera->getFront().x, App->camera->getFront().y, App->camera->getFront().z);
-        ImGui::Text("Up: %f %f %f", App->camera->getUp().x, App->camera->getUp().y, App->camera->getUp().z);
-        ImGui::Text("Right: %f %f %f", App->camera->getRight().x, App->camera->getRight().y, App->camera->getRight().z);
+        ImGui::Text("Transform");
+        ImGui::InputFloat3("Position", position, "%.3f", ImGuiInputTextFlags_ReadOnly);        
+        ImGui::InputFloat3("Rotation", rotation, "%.3f", ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputFloat3("Scale", scale, "%.3f", ImGuiInputTextFlags_ReadOnly);       
+    }
+    if (ImGui::CollapsingHeader("Mesh", &open_camera, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::Text("Mesh");
+        ImGui::SameLine();
+        ImGui::Button(meshName);
+        if (ImGui::BeginPopupContextItem())
+        {
+            ImGui::Text("Meshes:");
+            if (ImGui::Selectable("BakerHouse")){ meshName = "BakerHouse"; }
+            if (ImGui::Selectable("AnotherOne")) { meshName = "AnotherOneMesh"; }//All of this is temporal            
+            if (ImGui::Button("Close"))
+                ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+        }
+    }
+    
+    if (ImGui::CollapsingHeader("Material", &open_camera, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+
     }
 
     // Geometry
-    if (ImGui::CollapsingHeader("Geometry")) {
+    if (ImGui::CollapsingHeader("Geometry", &open_geometry, ImGuiTreeNodeFlags_DefaultOpen)) {
 
         // For every mesh, show vertices and faces
         ImGui::Text("Num Meshes: %d", App->model->GetMeshes());
@@ -174,20 +196,25 @@ void ModuleEditor::Properties() {
         ImGui::Text("Num Faces:");
         for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
             ImGui::Text("Mesh %d: %d", i+1, App->model->GetFaces(i));
-        }
-        
+        }        
     }
 
     // Texture
-    if (ImGui::CollapsingHeader("Texture")) {
+    if (ImGui::CollapsingHeader("Texture", &open_texture, ImGuiTreeNodeFlags_DefaultOpen)) {
         for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
-            int textw = App->model->GetTextureWidth(i);
-            int texth = App->model->GetTextureHeight(i);
+            /*int textw = App->model->GetTextureWidth(i);
+            int texth = App->model->GetTextureHeight(i);*/
 
-            ImGui::Text("Texture %d size: %d %d", i+1, textw, texth);
-            ImGui::Image((ImTextureID)App->model->GetMaterial(i), { (float)textw,(float)texth });
+            ImGui::Text("Texture %d size: %d %d", i+1, 200, 200);
+            ImGui::Image((ImTextureID)App->model->GetMaterial(i), {200, 200});
         }
 
+    }
+    if (ImGui::CollapsingHeader("Camera", &open_camera, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::Text("Front: %f %f %f", App->camera->getFront().x, App->camera->getFront().y, App->camera->getFront().z);
+        ImGui::Text("Up: %f %f %f", App->camera->getUp().x, App->camera->getUp().y, App->camera->getUp().z);
+        ImGui::Text("Right: %f %f %f", App->camera->getRight().x, App->camera->getRight().y, App->camera->getRight().z);
     }
 
     ImGui::SetWindowSize({ (float)(w / 2),(float)(h / 1.6) });
@@ -377,7 +404,17 @@ void ModuleEditor::Project()
 void ModuleEditor::Hierarchy()
 {
     ImGui::Begin("Hierarchy");
+
+    if (ImGui::Selectable("GameObject"))
+    {
+        open_transformation = true;
+        open_geometry = true;
+        open_texture = true;
+        open_camera = true;
+    }
+    ConfigurationWindow();
     ImGui::End();
 }
+
 
 

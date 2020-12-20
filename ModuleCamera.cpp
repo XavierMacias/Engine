@@ -25,7 +25,7 @@ float4x4 ModuleCamera::setProjectionMatrix()
 float4x4 ModuleCamera::setViewMatrix()
 {
 	float4x4 viewMatrix = frustum.ViewMatrix();
-
+	
 	return viewMatrix;
 }
 
