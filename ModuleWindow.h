@@ -20,10 +20,14 @@ public:
 
 	// Called before quitting
 	bool CleanUp();
+	void SetFlags(SDL_WindowFlags flag, bool state);
+	void SetBrightness(float bright);
+	void SetWindowSize(int width, int height);
 
 public:
 	//The window we'll be rendering to
 	SDL_Window* window = NULL;
+	Uint32 flags;
 
 	//The surface contained by the window
 	SDL_Surface* screen_surface = NULL;

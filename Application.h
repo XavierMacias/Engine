@@ -4,7 +4,6 @@
 #include "Globals.h"
 #include "Module.h"
 
-class ModuleRender;
 class ModuleWindow;
 class ModuleTextures;
 class ModuleInput;
@@ -28,7 +27,6 @@ public:
 	bool CleanUp();
 
 public:
-	ModuleRender* renderer = nullptr;
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
 	ModuleCamera* camera = nullptr;

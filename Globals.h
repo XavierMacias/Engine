@@ -34,10 +34,10 @@ enum update_status
 	 }
 
 // Configuration -----------
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 780
 #define SCREEN_SIZE 2
 #define FULLSCREEN false
 #define VSYNC true
 #define TITLE "Engenius"
-#define DEGTORAD M_PI/180.0
+

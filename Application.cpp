@@ -1,7 +1,6 @@
 #pragma once
 #include "Application.h"
 #include "ModuleWindow.h"
-#include "ModuleRender.h"
 #include "ModuleInput.h"
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
@@ -17,7 +16,6 @@ Application::Application()
 {
 	// Order matters: they will Init/start/update in this order
 	modules.push_back(window = new ModuleWindow());
-	//modules.push_back(renderer = new ModuleRender());
 	modules.push_back(texture = new ModuleTexture());
 	modules.push_back(model = new ModuleModel());
 	modules.push_back(exercise = new ModuleRenderExercise());
@@ -42,6 +40,9 @@ bool Application::Init()
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
+
+	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+		ret = (*it)->Start();
 
 	return ret;
 }

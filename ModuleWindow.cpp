@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleCamera.h"
 
 ModuleWindow::ModuleWindow()
 {
@@ -27,7 +28,7 @@ bool ModuleWindow::Init()
 		//Create window
 		int width = SCREEN_WIDTH;
 		int height = SCREEN_HEIGHT;
-		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+		flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 		if(FULLSCREEN == true)
 		{
@@ -44,7 +45,6 @@ bool ModuleWindow::Init()
 		else
 		{
 			//Get window surface
-			
 			screen_surface = SDL_GetWindowSurface(window);
 		}
 	}
@@ -68,3 +68,29 @@ bool ModuleWindow::CleanUp()
 	return true;
 }
 
+void ModuleWindow::SetFlags(SDL_WindowFlags flag, bool state) {
+	switch (flag) {
+		case SDL_WINDOW_FULLSCREEN:
+			SDL_SetWindowFullscreen(window, state);
+			break;
+		case SDL_WINDOW_RESIZABLE:
+			SDL_SetWindowResizable(window, (SDL_bool)state);
+			break;
+		case SDL_WINDOW_BORDERLESS:
+			if (state) SDL_SetWindowBordered(window, SDL_FALSE);
+			else SDL_SetWindowBordered(window, SDL_TRUE);
+			break;
+		default:
+			break;
+	}
+}
+
+void ModuleWindow::SetBrightness(float bright) {
+	SDL_SetWindowBrightness(window, bright);
+}
+
+void ModuleWindow::SetWindowSize(int width, int height) {
+	SDL_SetWindowSize(window, width, height);
+	App->camera->SetFOV(float(width)/float(height));
+
+}

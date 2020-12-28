@@ -7,7 +7,6 @@ class ModuleProgram : public Module
 {
 public:
 	ModuleProgram();
-	~ModuleProgram();
 
 	bool Init();
 	update_status Update();
