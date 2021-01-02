@@ -2,17 +2,19 @@
 #define __material_component__
 
 #include "Component.h"
+#include <string>
 
 class MaterialComponent : public Component
 {
-public:
-
-	/*virtual void Enable() override;
-	virtual void Disable() override;
-	virtual void Update() override;*/
-
 private:
+	std::string materialName;
+	
+public:
+	MaterialComponent(GameObject* gameObject);
+	~MaterialComponent();
 
+	void setMaterial(int material);
+	void getMaterial();
 };
 
 

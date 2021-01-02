@@ -170,11 +170,15 @@
     <ClCompile Include="TransformComponent.cpp">
       <Filter>GO_Components</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>UI_Window</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleTimer.cpp">
       <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleScene.cpp" />
+    <ClCompile Include="Component.cpp">
+      <Filter>GO_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>GO_Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -459,11 +463,12 @@
     <ClInclude Include="TransformComponent.h">
       <Filter>GO_Components</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>UI_Window</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleTimer.h">
       <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleScene.h" />
+    <ClInclude Include="CameraComponent.h">
+      <Filter>GO_Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -496,9 +501,6 @@
     </Filter>
     <Filter Include="GO_Components">
       <UniqueIdentifier>{505b026f-43f0-418b-a987-8d47f183de61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI_Window">
-      <UniqueIdentifier>{c8a869d5-6585-463e-a960-766200874457}</UniqueIdentifier>
     </Filter>
     <Filter Include="Timer">
       <UniqueIdentifier>{b027c1a5-953a-47b9-af55-f916654ad6af}</UniqueIdentifier>

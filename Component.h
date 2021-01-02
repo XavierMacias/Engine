@@ -1,28 +1,37 @@
 #ifndef __component__
 #define __component__
 
+
 #include <string>
 
-enum ComponentType
-{
-	TRANSFORM_COMPONENT,
-	MESH_COMPONENT,
-	MATERIAL_COMPONENT
-};
+class GameObject;
 
 class Component
 {
-public:
-	/*Component();
-	~Component();*/
-
-	/*virtual void Enable();
-	virtual void Disable();
-	virtual void Update();*/
-
 private:
 	std::string name;
-	
+	bool active;
+	GameObject* owner;	
+
+public:
+	enum ComponentType
+	{
+		TRANSFORM_COMPONENT,
+		MESH_COMPONENT,
+		MATERIAL_COMPONENT
+	};
+
+public:
+	Component(GameObject* gameObject, ComponentType type);
+	~Component();
+
+	void Enable(bool active);	
+
+	virtual void Init() {};
+	virtual void Update() {};
+	virtual void CleanUp() {};
+
+	void Remove();
 };
 
 
