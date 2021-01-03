@@ -6,6 +6,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "SDL/include/SDL.h"
+#include "GameObject.h"
+#include "ModuleScene.h"
 
 ModuleEditor::ModuleEditor()
 {
@@ -153,15 +155,17 @@ void ModuleEditor::About() {
 
 void ModuleEditor::Properties() {
 
-    ImGui::Begin("Inspector", &show_app_prop);
+    static bool GoActive = true;
+
+    ImGui::Begin("Inspector", &show_app_prop);    
     
     // Transformation
-    if (ImGui::CollapsingHeader("Transformation", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) { 
+    if (ImGui::CollapsingHeader("Transformation", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
         //Coords
         ImGui::Text("Transform");
-        ImGui::InputFloat3("Position", position, "%.3f", ImGuiInputTextFlags_ReadOnly);        
+        ImGui::InputFloat3("Position", position, "%.3f", ImGuiInputTextFlags_ReadOnly);
         ImGui::InputFloat3("Rotation", rotation, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputFloat3("Scale", scale, "%.3f", ImGuiInputTextFlags_ReadOnly);       
+        ImGui::InputFloat3("Scale", scale, "%.3f", ImGuiInputTextFlags_ReadOnly);
     }
     if (ImGui::CollapsingHeader("Mesh", &open_camera, ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -171,7 +175,7 @@ void ModuleEditor::Properties() {
         if (ImGui::BeginPopupContextItem())
         {
             ImGui::Text("Meshes:");
-            if (ImGui::Selectable("BakerHouse")){ meshName = "BakerHouse"; }
+            if (ImGui::Selectable("BakerHouse")) { meshName = "BakerHouse"; }
             if (ImGui::Selectable("AnotherOne")) { meshName = "AnotherOneMesh"; }//All of this is temporal            
             if (ImGui::Button("Close"))
                 ImGui::CloseCurrentPopup();
@@ -409,8 +413,8 @@ void ModuleEditor::Project()
 
 //GameObject Hierarchy
 void ModuleEditor::Hierarchy()
-{
-    ImGui::Begin("Hierarchy");
+{   
+    ImGui::Begin("Hierarchy");       
 
     if (ImGui::Selectable("GameObject"))
     {
@@ -419,9 +423,17 @@ void ModuleEditor::Hierarchy()
         open_texture = true;
         open_camera = true;
     }
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::Selectable("Empty game object")) {/*App->scene->CreateGameObject();*/ }
+        if (ImGui::Button("Close"))
+            ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
+    }
     ConfigurationWindow();
     ImGui::End();
 }
+
 
 
 

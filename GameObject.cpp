@@ -1,43 +1,69 @@
 #include "GameObject.h"
+#include "TransformComponent.h"
+#include "MeshComponent.h"
+#include "MaterialComponent.h"
 
-GameObject::GameObject() : active{ true }, name{ "Game Object" }, components{ transform_, mesh_, material_ } {}
+GameObject::GameObject(GameObject* parent, const char* name) : name(name)
+{
+	
+}
 
-GameObject::~GameObject(){ children.clear(); }
+GameObject::~GameObject()
+{
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		delete* it;
+	}
+	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
+	{
+		delete* it;
+	}
+}
 
 void GameObject::Update()
 {
-	    
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		(*it)->Update();
 }
 
-Component* GameObject::CreateComponent(ComponentType type) //Only in case that we press the "+" button in Inspector (1 argument)
+Component* GameObject::CreateComponent(Component::ComponentType type)
 {
+	Component* component = nullptr;
+
 	switch (type)
 	{
-	case TRANSFORM_COMPONENT:
+	case Component::ComponentType::TRANSFORM_COMPONENT:
 	{
-		TransformComponent* transformComp{ new TransformComponent {} };
-		components.push_back(transformComp);
-		return transformComp;
+		component = new TransformComponent(this);
 		break;
 	}
-	case MESH_COMPONENT:
+	case Component::ComponentType::MESH_COMPONENT:
 	{
-		MeshComponent* meshComp{ new MeshComponent {} };
-		components.push_back(meshComp);
-		return meshComp;
+		component = new MeshComponent(this);
 		break;
 	}
 
-	case MATERIAL_COMPONENT:
+	case Component::ComponentType::MATERIAL_COMPONENT:
 	{
-		MaterialComponent* materialComp{ new MaterialComponent {} };
-		components.push_back(materialComp);
-		return materialComp;
+		component = new MaterialComponent(this);
 		break;
 	}
+
 	default:
 		break;
 	}
+
+	if (component != nullptr)
+		components.push_back(component);
+
+	return component;
 }
+
+void GameObject::setParent(GameObject* parent)
+{
+
+}
+
+
 
 

@@ -9,6 +9,7 @@
 #include "ModuleTexture.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleModel.h"
+#include "ModuleScene.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ Application::Application()
 	modules.push_back(model = new ModuleModel());
 	modules.push_back(exercise = new ModuleRenderExercise());
 	modules.push_back(draw = new ModuleDebugDraw());
+	modules.push_back(scene = new ModuleScene());
 	modules.push_back(editor = new ModuleEditor());
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(camera = new ModuleCamera());
@@ -28,7 +30,7 @@ Application::Application()
 
 Application::~Application()
 {
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
+	for(vector<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
     {
         delete *it;
     }
@@ -38,10 +40,10 @@ bool Application::Init()
 {
 	bool ret = true;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+	for(vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
 
-	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+	for (vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Start();
 
 	return ret;
@@ -51,13 +53,13 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		ret = (*it)->PreUpdate();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		ret = (*it)->Update();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		ret = (*it)->PostUpdate();
 
 	return ret;
@@ -67,7 +69,7 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
-	for(list<Module*>::reverse_iterator it = modules.rbegin(); it != modules.rend() && ret; ++it)
+	for(vector<Module*>::reverse_iterator it = modules.rbegin(); it != modules.rend() && ret; ++it)
 		ret = (*it)->CleanUp();
 
 	return ret;

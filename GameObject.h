@@ -2,34 +2,32 @@
 #define __Game_Object__
 
 #include <string>
+#include <vector>
+#include<list>
 
 #include "Component.h"
-#include "TransformComponent.h"
-#include "MeshComponent.h"
-#include "MaterialComponent.h"
-
-#include <vector>
 
 class GameObject
 {
-public:
-	~GameObject();
-	GameObject();
+	friend class Component;
 
-	void Update();
-	Component* CreateComponent(ComponentType type);	
-	
-private:
+private:	
+	GameObject* parent;
+
+public:
 	bool active;
 	std::string name;
-
-	TransformComponent* transform_;	
-	MeshComponent* mesh_;
-	MaterialComponent* material_;
-
 	std::vector<Component*> components;
 	std::vector<GameObject*> children;
-	GameObject* parent;
+	
+public:
+	GameObject(GameObject* parent, const char* name);
+	~GameObject();	
+	
+	void Update();
+	Component* CreateComponent(Component::ComponentType type);		
+
+	void setParent(GameObject* parent);
 };
 
 #endif __Game_Object__

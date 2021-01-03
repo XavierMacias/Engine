@@ -3,6 +3,7 @@
 #include<list>
 #include "Globals.h"
 #include "Module.h"
+#include <vector>
 
 class ModuleWindow;
 class ModuleTextures;
@@ -14,6 +15,7 @@ class ModuleProgram;
 class ModuleTexture;
 class ModuleDebugDraw;
 class ModuleModel;
+class ModuleScene;
 
 class Application
 {
@@ -36,10 +38,11 @@ public:
 	ModuleTexture* texture = nullptr;
 	ModuleDebugDraw* draw = nullptr;
 	ModuleModel* model = nullptr;
+	ModuleScene* scene = nullptr;
 
 private:
 
-	std::list<Module*> modules;
+	std::vector<Module*> modules;
 
 };
 
