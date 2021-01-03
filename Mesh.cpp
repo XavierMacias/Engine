@@ -99,10 +99,13 @@ void Mesh::Draw(const std::vector<unsigned>& model_textures)
 
 	glBindTexture(GL_TEXTURE_2D, model_textures[material_index]);
 	glUniform1i(glGetUniformLocation(program, "diffuse"), 0);
-	glUniform3f(glGetUniformLocation(program, "light_dir"), 1.0, 0.0, 0.0);
+	glUniform3f(glGetUniformLocation(program, "light_dir"), App->editor->light_direction[0], App->editor->light_direction[1], App->editor->light_direction[2]);
 	glUniform3f(glGetUniformLocation(program, "view_pos"), App->camera->getPos()[0], App->camera->getPos()[1], App->camera->getPos()[2]);
 	glUniform3f(glGetUniformLocation(program, "ambient_color"), App->editor->ambient_color[0], App->editor->ambient_color[1], App->editor->ambient_color[2]);
 	glUniform3f(glGetUniformLocation(program, "light_color"), App->editor->light_color[0], App->editor->light_color[1], App->editor->light_color[2]);
+	glUniform1i(glGetUniformLocation(program, "kd"), App->editor->kDiff);
+	glUniform1i(glGetUniformLocation(program, "ks"), App->editor->kSpec);
+	glUniform1i(glGetUniformLocation(program, "n"), App->editor->nSpec);
 	glBindVertexArray(vao);
 
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);

@@ -63,7 +63,7 @@ update_status ModuleEditor::Update()
     if (ImGui::Begin("Scene"))
     {        
         ImVec2 window_size = ImVec2{ ImGui::GetWindowWidth() + 10, ImGui::GetWindowHeight() - 35};
-        ImGui::Image(ImTextureID(App->exercise->textureColorbuffer), window_size);
+        ImGui::Image(ImTextureID(App->exercise->textureColorbuffer), window_size, ImVec2(0,1), ImVec2(1,0));
 
         ImGui::End();
 
@@ -334,6 +334,10 @@ void ModuleEditor::ConfigurationWindow() {
         ImGui::SliderFloat4("Background color", bGround, 0.0f, 1.0f);
         ImGui::SliderFloat3("Ambient color", ambient_color, 0.0f, 1.0f);
         ImGui::SliderFloat3("Light color", light_color, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Light direction", light_direction, 0.0f, 1.0f);
+        ImGui::SliderFloat("Specular n", &nSpec, 0.5f, 250.0f);
+        ImGui::SliderFloat("Kd", &kDiff, 0.1f, 2.0f);
+        ImGui::SliderFloat("Ks", &kSpec, 0.04f, 1.0f);
     }
     // Info
     if (ImGui::CollapsingHeader("Information")) {

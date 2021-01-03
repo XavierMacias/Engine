@@ -21,7 +21,7 @@ public:
 	
 private:
 	bool active;
-	std::string name;	
+	std::string name;
 
 	TransformComponent* transform_;	
 	MeshComponent* mesh_;
