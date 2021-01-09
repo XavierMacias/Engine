@@ -16,16 +16,11 @@ private:
 
 public:
 	bool active;
-	std::string name;
-	std::vector<Component*> components;
-	std::vector<GameObject*> children;
-	
-public:
-	GameObject(GameObject* parent, const char* name);
-	~GameObject();	
-	
-	void Update();
-	Component* CreateComponent(Component::ComponentType type);		
+	std::string name;	
+
+	TransformComponent* transform_;	
+	MeshComponent* mesh_;
+	MaterialComponent* material_;
 
 	void setParent(GameObject* parent);
 };
