@@ -11,18 +11,29 @@ class GameObject
 {
 	friend class Component;
 
-private:	
+private:
 	GameObject* parent;
+	unsigned int uid;
 
 public:
 	bool active;
-	std::string name;	
+	const char* name;
+	bool isRoot;
+	std::vector<Component*> components;
+	std::vector<GameObject*> children;
 
-	TransformComponent* transform_;	
-	MeshComponent* mesh_;
-	MaterialComponent* material_;
+public:
+	GameObject(GameObject* parent, const char* name, bool isRoot);
+	~GameObject();
 
+	void Update();
+	Component* CreateComponent(Component::ComponentType type);
+	GameObject* GetParent() { return parent; }
 	void setParent(GameObject* parent);
+	bool GetRoot() { return isRoot; }
+	int GetUid() { return uid; }
+	void SetName(char* n) { name = n; }
+
 };
 
 #endif __Game_Object__

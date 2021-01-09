@@ -5,6 +5,8 @@
 #include "Module.h"
 #include <vector>
 
+#include "MathGeoLib/Algorithm/Random/LCG.h"
+
 class ModuleWindow;
 class ModuleTextures;
 class ModuleInput;
@@ -39,6 +41,7 @@ public:
 	ModuleDebugDraw* draw = nullptr;
 	ModuleModel* model = nullptr;
 	ModuleScene* scene = nullptr;
+	LCG* random = nullptr;
 
 private:
 

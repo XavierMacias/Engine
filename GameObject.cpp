@@ -2,10 +2,11 @@
 #include "TransformComponent.h"
 #include "MeshComponent.h"
 #include "MaterialComponent.h"
+#include "Application.h"
 
-GameObject::GameObject(GameObject* parent, const char* name) : name(name)
+GameObject::GameObject(GameObject* parent, const char* name, bool isRoot) : parent(parent), name(name), isRoot(isRoot)
 {
-	
+	uid = App->random->Int();
 }
 
 GameObject::~GameObject()
@@ -59,9 +60,9 @@ Component* GameObject::CreateComponent(Component::ComponentType type)
 	return component;
 }
 
-void GameObject::setParent(GameObject* parent)
+void GameObject::setParent(GameObject* p)
 {
-
+	parent = p;
 }
 
 

@@ -6,7 +6,6 @@
 #include "Globals.h"
 #include "Application.h"
 #include "SDL/include/SDL.h"
-#include "GameObject.h"
 #include "ModuleScene.h"
 
 ModuleEditor::ModuleEditor()
@@ -23,7 +22,23 @@ bool ModuleEditor::Init()
     ImGui_ImplOpenGL3_Init();
     AddLog("Welcome to console");
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    
+    objIndex = 0;
+    open_transformation = true;
+    open_geometry = true;
+    open_texture = true;
+    open_camera = true;
+
+    root = App->scene->CreateGameObject(NULL, "Scene", true);
+    /*GameObject* go1 = App->scene->CreateGameObject(NULL, "GameObject1");
+    GameObject* go2 = App->scene->CreateGameObject(NULL, "GameObject2");
+    GameObject* go3 = App->scene->CreateGameObject(go2, "GameChild3");
+    GameObject* go4 = App->scene->CreateGameObject(go2, "GameChild4");
+    GameObject* go5 = App->scene->CreateGameObject(go4, "GrandChild5");
+    GameObject* go6 = App->scene->CreateGameObject(NULL, "GameObject6");
+    GameObject* go7 = App->scene->CreateGameObject(go1, "GameChild7");
+    GameObject* go8 = App->scene->CreateGameObject(go7, "GrandChild8");
+    GameObject* go9 = App->scene->CreateGameObject(go5, "GrandGran9");*/
+
 	return true;
 }
 
@@ -148,17 +163,147 @@ void ModuleEditor::About() {
     ImGui::Begin("About");
 
     ImGui::Text("This is Engenius");
-    ImGui::Text("It's an engine created by Xavier Macias and Rober Gil");
+    ImGui::Text("It's an engine created by Xavier Macias and Robert Gil");
     
     ImGui::End();
 }
 
+//GameObject Hierarchy
+void ModuleEditor::Hierarchy()
+{
+    GameObject* go = nullptr;
+    ImGui::Begin("Hierarchy");
+    gameobjects = App->scene->GetGameObjects();
+    
+    if (ImGui::Button("Create empty GameObject"))
+        //ImGui::OpenPopup("Create");
+        App->scene->CreateGameObject(root, "New GameObject", false);
+        
+
+    if (ImGui::BeginPopupModal("Create", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        if (ImGui::Button("Create")) {
+            App->scene->CreateGameObject(root, "New GameObject", false);
+            ImGui::CloseCurrentPopup();
+            //createName[64] = (char)"New GameObject";
+        }
+        //char createName[64] = "New GameObject";
+        //ImGui::InputText("Name", createName, 64);
+        if (ImGui::Button("No"))
+            ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
+    }
+
+    //if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_DefaultOpen))
+    //{
+    GetHierarchy(root);
+        //ImGui::TreePop();
+    //}
+    
+    ConfigurationWindow();
+    ImGui::End();
+}
+
+
+void ModuleEditor::GetHierarchy(GameObject* current) {
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
+
+    if (current == selectedObject) {
+        flags |= ImGuiTreeNodeFlags_Selected;
+    }
+    if (current->children.size() == 0) {
+        flags |= ImGuiTreeNodeFlags_Leaf;
+    }
+
+    if (ImGui::TreeNodeEx(current->name, flags)) {
+        if (ImGui::IsItemClicked(ImGuiMouseButton(0))) {
+            selectedObject = current;
+        }
+        if (ImGui::IsItemClicked(ImGuiMouseButton(1))) {
+            selectedObject = current;
+            ImGui::OpenPopup("GameObject");
+        }
+
+        if (ImGui::BeginDragDropSource()) {
+            selectedObject = current;
+            ImGui::SetDragDropPayload("Source", &current, sizeof(GameObject*));
+            ImGui::EndDragDropSource();
+        }
+        if (ImGui::BeginDragDropTarget()) {
+            if (ImGui::AcceptDragDropPayload("Source")) {
+                if (current != selectedObject && current->GetParent() != selectedObject && selectedObject->GetParent() != current) {
+                    App->scene->SetNewParent(selectedObject, current);
+                    //current->setParent(selectedObject);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        if (ImGui::BeginPopup("GameObject", ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            //static char createName[64] = "New GameObject";
+            //ImGui::InputText("Name", createName, 64);
+            if (ImGui::Button("Create empty GameObject")) {
+                App->scene->CreateGameObject(current, "New GameObject", false);
+            }
+            if (ImGui::Button("Delete GameObject")) {
+                App->scene->RemoveGameObject(current);
+            }
+            if (ImGui::Button("Cancel"))
+                ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+        }
+
+        for (int i = 0; i < current->children.size(); ++i) {
+            ImGui::PushID(current->children[i]);
+            GetHierarchy(current->children[i]);
+            ImGui::PopID();
+        }
+        ImGui::TreePop();
+        
+    }
+}
+
 void ModuleEditor::Properties() {
 
+    //gameobjects = App->scene->GetGameObjects();
     static bool GoActive = true;
 
-    ImGui::Begin("Inspector", &show_app_prop);    
+    ImGui::Begin("Inspector", &show_app_prop);
     
+    if (selectedObject != nullptr && !selectedObject->GetRoot()) {
+        if (ImGui::CollapsingHeader("General", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Text("Name: %s", selectedObject->name);
+            /*static char name[64];
+            //strcpy_s(name, 64, gameobjects[0]->name);
+            
+            if (ImGui::InputText("Name", name, 64,
+                ImGuiInputTextFlags_AutoSelectAll))
+                gameobjects[0]->name = name;
+            //static char name[64];
+
+            //for (int i = 0; selectedObject->name[i] != '\0'; ++i) {
+            //    name[i] = selectedObject->name[i];
+            //}
+
+            //ImGui::InputText("Name", name, 64);
+            //if (ImGui::Button("Change Name"))
+            //    selectedObject->SetName(name);
+            /*
+            if (ImGui::BeginPopupModal("Remove", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Remove Gameobject?");
+                if (ImGui::Selectable("Yes")) {
+                    App->scene->RemoveGameObject(selectedObject);
+                }
+                if (ImGui::Button("No"))
+                    ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
+            }*/
+        }
+    }
+    
+
     // Transformation
     if (ImGui::CollapsingHeader("Transformation", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
         //Coords
@@ -410,30 +555,6 @@ void ModuleEditor::Project()
     ImGui::Begin("Project");
     ImGui::End();
 }
-
-//GameObject Hierarchy
-void ModuleEditor::Hierarchy()
-{   
-    ImGui::Begin("Hierarchy");       
-
-    if (ImGui::Selectable("GameObject"))
-    {
-        open_transformation = true;
-        open_geometry = true;
-        open_texture = true;
-        open_camera = true;
-    }
-    if (ImGui::BeginPopupContextItem())
-    {
-        if (ImGui::Selectable("Empty game object")) {/*App->scene->CreateGameObject();*/ }
-        if (ImGui::Button("Close"))
-            ImGui::CloseCurrentPopup();
-        ImGui::EndPopup();
-    }
-    ConfigurationWindow();
-    ImGui::End();
-}
-
 
 
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "GameObject.h"
 #include <vector>
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_opengl3.h"
@@ -27,7 +28,12 @@ private:
 	void Console();
 	void About();
 	void Properties();
+
+	void GetHierarchy(GameObject* current);
 		
+	GameObject* selectedObject = nullptr;
+	GameObject* root = nullptr;
+
 	ImGuiTextBuffer buf;
 	bool scrollToBottom;
 	bool focusConfig, focusAbout, focusConsole, focusProp;	
@@ -36,7 +42,9 @@ private:
 	bool show_console{ true };
 	bool show_app_prop{ true };
 	bool show_app_config{ true };
-	bool show_app_about{ false };	
+	bool show_app_about{ false };
+	int objIndex = 0;
+	std::vector<GameObject*> gameobjects;
 
 	//Open Collapsing header
 	bool open_transformation{ false };

@@ -11,7 +11,11 @@ private:
 public:
 	ModuleScene();
 	~ModuleScene();
-	GameObject* CreateGameObject(GameObject* parent, const char* name);
+	GameObject* CreateGameObject(GameObject* parent, const char* name, bool root);
+	std::vector<GameObject*> GetGameObjects() { return game_objects; }
+	GameObject* FindGameObject(GameObject* parent);
+	void RemoveGameObject(GameObject* current);
+	void SetNewParent(GameObject* newparent, GameObject* newchild);
 
 };
 
