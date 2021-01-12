@@ -8,6 +8,7 @@
 #include "ImGui/imgui_impl_sdl.h"
 #include "ImGui/imgui_internal.h"
 
+
 class ModuleEditor : public Module
 {
 public:
@@ -30,6 +31,8 @@ private:
 	void Properties();
 
 	void GetHierarchy(GameObject* current);
+	void HideGamobject(bool active);
+
 		
 	GameObject* selectedObject = nullptr;
 	GameObject* root = nullptr;
@@ -51,6 +54,8 @@ private:
 	bool open_geometry{ false };
 	bool open_texture{ false };
 	bool open_camera{ false };
+	bool open_mesh{ false };
+	bool open_material{ false };
 	
 	//Meshes
 	char* meshName{"BakerHouse"};

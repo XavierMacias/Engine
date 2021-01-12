@@ -2,19 +2,31 @@
 #define __mesh_component__
 
 #include "Component.h"
-#include <string>
+#include "Globals.h"
 
 class MeshComponent : public Component
 {
+public:
+	enum Meshes
+	{
+		AmongUs,
+		Fox,
+		BakerHouse,
+		Robot
+	};
+
 private:
-	std::string meshName;
-	
+	const char* meshName;
+	UID mesh = 0;
+
 public:
 	MeshComponent(GameObject* gameObject);
 	~MeshComponent();
 
-	void setMesh(unsigned int mesh);
-	void getMesh();
+	void SetMesh(unsigned int mesh);
+	const char* GetMeshName() const { return meshName; }
+	void SelectMesh(MeshComponent::Meshes mesh);
+
 };
 
 #endif __mesh_component__

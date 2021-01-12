@@ -246,7 +246,6 @@
     <ClInclude Include="ModuleTimer.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -317,7 +316,6 @@
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleTimer.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
-    <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\Geometry\KDTree.inl" />

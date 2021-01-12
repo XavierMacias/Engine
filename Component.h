@@ -8,18 +8,18 @@ class GameObject;
 
 class Component
 {
+public:
+	enum ComponentType
+	{
+		MESH_COMPONENT,
+		MATERIAL_COMPONENT
+	};
+
 private:
 	std::string name;
 	bool active;
 	GameObject* owner;	
-
-public:
-	enum ComponentType
-	{
-		TRANSFORM_COMPONENT,
-		MESH_COMPONENT,
-		MATERIAL_COMPONENT
-	};
+	ComponentType type;
 
 public:
 	Component(GameObject* gameObject, ComponentType type);
@@ -32,6 +32,11 @@ public:
 	virtual void CleanUp() {};
 
 	void Remove();
+
+	Component::ComponentType GetType() const;
+	const char* GetTypeStr() const;
+
+
 };
 
 

@@ -5,7 +5,10 @@
 #include <vector>
 #include<list>
 
+#include "Globals.h"
 #include "Component.h"
+#include "MathGeoLib/Math/Quat.h"
+#include "MathGeoLib/Math/float4x4.h"
 
 class GameObject
 {
@@ -13,10 +16,16 @@ class GameObject
 
 private:
 	GameObject* parent;
-	unsigned int uid;
+	UID uid;
+	Quat rotation = Quat::identity;
 
 public:
-	bool active;
+	float3 position = float3::zero;
+	float3 rotationEditor = float3::zero;
+	float3 scale = float3::zero;
+	
+public:
+	bool active = true;
 	const char* name;
 	bool isRoot;
 	std::vector<Component*> components;
@@ -32,7 +41,18 @@ public:
 	void setParent(GameObject* parent);
 	bool GetRoot() { return isRoot; }
 	int GetUid() { return uid; }
+
+	bool isActive();
+	void SetActive(bool act);
+
 	void SetName(char* n) { name = n; }
+	void SetLocalTransform(const float4x4& transform);
+	void SetLocalPosition(const float3& pos);	
+	void SetLocalRotation(const Quat& rotation);
+	void SetLocalScale(const float3& scale);
+	
+	bool HasMeshComponent();
+	bool HasMaterialComponent();
 
 };
 

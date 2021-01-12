@@ -167,9 +167,6 @@
     <ClCompile Include="MeshComponent.cpp">
       <Filter>GO_Components</Filter>
     </ClCompile>
-    <ClCompile Include="TransformComponent.cpp">
-      <Filter>GO_Components</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleTimer.cpp">
       <Filter>Timer</Filter>
     </ClCompile>
@@ -458,9 +455,6 @@
       <Filter>GO_Components</Filter>
     </ClInclude>
     <ClInclude Include="MeshComponent.h">
-      <Filter>GO_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformComponent.h">
       <Filter>GO_Components</Filter>
     </ClInclude>
     <ClInclude Include="ModuleTimer.h">

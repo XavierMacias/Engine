@@ -59,7 +59,7 @@ bool ModuleRenderExercise::Start() {
 }
 
 void ModuleRenderExercise::LoadModel(char* filename) {
-	if (getFileExt((std::string)filename) == "fbx") {
+	if (getFileExt((std::string)filename) == "fbx" || getFileExt((std::string)filename) == "FBX") {
 		App->model->CleanUp();
 		App->model->Load(filename);
 		//App->camera->Focus(true);

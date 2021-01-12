@@ -7,6 +7,7 @@
 #include "Application.h"
 #include "SDL/include/SDL.h"
 #include "ModuleScene.h"
+#include "MeshComponent.h"
 
 ModuleEditor::ModuleEditor()
 {
@@ -24,10 +25,7 @@ bool ModuleEditor::Init()
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     objIndex = 0;
     open_transformation = true;
-    open_geometry = true;
-    open_texture = true;
-    open_camera = true;
-
+    
     root = App->scene->CreateGameObject(NULL, "Scene", true);
     /*GameObject* go1 = App->scene->CreateGameObject(NULL, "GameObject1");
     GameObject* go2 = App->scene->CreateGameObject(NULL, "GameObject2");
@@ -200,7 +198,7 @@ void ModuleEditor::Hierarchy()
         //ImGui::TreePop();
     //}
     
-    ConfigurationWindow();
+    /*ConfigurationWindow();*/
     ImGui::End();
 }
 
@@ -266,13 +264,23 @@ void ModuleEditor::GetHierarchy(GameObject* current) {
 
 void ModuleEditor::Properties() {
 
-    //gameobjects = App->scene->GetGameObjects();
-    static bool GoActive = true;
+    //gameobjects = App->scene->GetGameObjects();    
 
     ImGui::Begin("Inspector", &show_app_prop);
     
-    if (selectedObject != nullptr && !selectedObject->GetRoot()) {
-        if (ImGui::CollapsingHeader("General", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (selectedObject != nullptr && !selectedObject->GetRoot()) 
+    {       
+
+        if (ImGui::CollapsingHeader("General", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) 
+        {
+            //Activate gameobject
+            bool active = selectedObject->isActive();
+            ImGui::Checkbox("Active", &active);
+            selectedObject->SetActive(active);
+
+            
+
+            //Gameobject name
             ImGui::Text("Name: %s", selectedObject->name);
             /*static char name[64];
             //strcpy_s(name, 64, gameobjects[0]->name);
@@ -304,68 +312,134 @@ void ModuleEditor::Properties() {
     }
     
 
-    // Transformation
-    if (ImGui::CollapsingHeader("Transformation", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
-        //Coords
-        ImGui::Text("Transform");
-        ImGui::InputFloat3("Position", position, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputFloat3("Rotation", rotation, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputFloat3("Scale", scale, "%.3f", ImGuiInputTextFlags_ReadOnly);
-    }
-    if (ImGui::CollapsingHeader("Mesh", &open_camera, ImGuiTreeNodeFlags_DefaultOpen))
+    // Transformation: TODO LINK IMGUI WITH GAMEOBJECT TRANSFORM, PROBLEMS WITH FLOAT3
+    if (selectedObject != nullptr)
     {
-        ImGui::Text("Mesh");
-        ImGui::SameLine();
-        ImGui::Button(meshName);
+        if (ImGui::CollapsingHeader("Transformation", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
+            //Coords               
+            ImGui::Text("Transform");
+            ImGui::InputFloat3("Position", position, "%.3f", ImGuiInputTextFlags_ReadOnly);
+            ImGui::InputFloat3("Rotation", rotation, "%.3f", ImGuiInputTextFlags_ReadOnly);
+            ImGui::InputFloat3("Scale", scale, "%.3f", ImGuiInputTextFlags_ReadOnly);
+        }
+    }
+    //JUST SHOW THE COMPONENTS WHICH WE NEED 
+    if (selectedObject!=nullptr && !selectedObject->components.empty())
+    {
+        //Mesh Filter: TODO LINK WITH THE GAMEOBJECT MESH
+        if (open_mesh)
+        {
+            if (ImGui::CollapsingHeader("Mesh Filter", &open_mesh, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Selected))
+            {
+                ImGui::Text("Mesh");
+                ImGui::SameLine();
+                ImGui::Button(meshName);
+                if (ImGui::BeginPopupContextItem())
+                {
+                    ImGui::Text("Meshes:");
+                    if (ImGui::Selectable("BakerHouse")) { meshName = "BakerHouse"; }//Try to acces to the components for the gameobject***********
+                    if (ImGui::Selectable("AnotherOne")) { meshName = "AnotherOneMesh"; }//All of this is temporal            
+                    if (ImGui::Button("Close"))
+                        ImGui::CloseCurrentPopup();
+                    ImGui::EndPopup();
+                }
+            }
+
+            // Geometry: TODO LINK THIS GEOMETRY WITH THE GAMEOBJECT ONE
+            // For every mesh, show vertices and faces
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Num Meshes");
+            ImGui::Spacing();
+            ImGui::Text("%d", App->model->GetMeshes());
+            ImGui::Separator();
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Vertices");
+            ImGui::Spacing();
+            for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
+                ImGui::Text("Mesh %d: %d", i + 1, App->model->GetVertices(i));
+            }
+            ImGui::Separator();
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Faces");
+            ImGui::Spacing();
+            for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
+                ImGui::Text("Mesh %d: %d", i + 1, App->model->GetFaces(i));
+            }
+            ImGui::Separator();
+        }
+
+        //Material: TODO LINK WITH THE GAMEOBJECT MATERIAL
+        if (open_material)
+        {
+            if (ImGui::CollapsingHeader("Material", &open_material, ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::Text("Material");
+                ImGui::SameLine();
+                ImGui::Button("BakerHouse"); //->Put the material name
+                if (ImGui::BeginPopupContextItem())
+                {
+                    ImGui::Text("Materials:");
+                    if (ImGui::Selectable("BakerHouse")) { meshName = "BakerHouse"; }
+                    if (ImGui::Selectable("AnotherOne")) { meshName = "AnotherOneMesh"; }//All of this is temporal            
+                    if (ImGui::Button("Close"))
+                        ImGui::CloseCurrentPopup();
+                    ImGui::EndPopup();
+                }
+            }
+
+            // Texture: TODO CHANGE THIS, CHECK THE GAMEOBJECT ->SWAP TO MATERIAL            
+            for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
+                ImGui::Separator();
+                ImGui::Text("Texture %d size: %d %d", i + 1, 200, 200);
+                ImGui::Text(""); ImGui::SameLine(35);
+                ImGui::Image((ImTextureID)App->model->GetMaterial(i), { 200, 200 });
+            }
+            ImGui::Separator();
+            ImGui::Spacing();
+        }       
+        
+        //Camera
+        if (open_camera)
+        {
+            if (ImGui::CollapsingHeader("Camera", &open_camera))
+            {
+                ImGui::Text("Front: %f %f %f", App->camera->getFront().x, App->camera->getFront().y, App->camera->getFront().z);
+                ImGui::Text("Up: %f %f %f", App->camera->getUp().x, App->camera->getUp().y, App->camera->getUp().z);
+                ImGui::Text("Right: %f %f %f", App->camera->getRight().x, App->camera->getRight().y, App->camera->getRight().z);
+            }
+        }        
+    }   
+    
+    //Add component
+    if (selectedObject != nullptr)
+    {
+        ImGui::Text("");
+        ImGui::SameLine(60);
+        ImGui::Button("Add component", ImVec2(120, 30));
         if (ImGui::BeginPopupContextItem())
         {
-            ImGui::Text("Meshes:");
-            if (ImGui::Selectable("BakerHouse")) { meshName = "BakerHouse"; }
-            if (ImGui::Selectable("AnotherOne")) { meshName = "AnotherOneMesh"; }//All of this is temporal            
-            if (ImGui::Button("Close"))
+            ImGui::Text("New Component");
+            if (ImGui::Button("Mesh component")) {
+                if (selectedObject != nullptr)
+                {
+                    open_mesh = true;
+                    open_geometry = true;
+                    selectedObject->CreateComponent(Component::MESH_COMPONENT);
+                }
+            }
+
+            if (ImGui::Button("Material component")) {
+                if (selectedObject != nullptr)
+                {
+                    open_material = true;
+                    selectedObject->CreateComponent(Component::MATERIAL_COMPONENT);
+                }
+            }
+            if (ImGui::Button("Cancel"))
                 ImGui::CloseCurrentPopup();
             ImGui::EndPopup();
         }
     }
-    
-    if (ImGui::CollapsingHeader("Material", &open_camera, ImGuiTreeNodeFlags_DefaultOpen))
-    {
-
-    }
-
-    // Geometry
-    if (ImGui::CollapsingHeader("Geometry", &open_geometry, ImGuiTreeNodeFlags_DefaultOpen)) {
-
-        // For every mesh, show vertices and faces
-        ImGui::Text("Num Meshes: %d", App->model->GetMeshes());
-        ImGui::Text("Num Vertices:");
-        for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
-            ImGui::Text("Mesh %d: %d", i+1, App->model->GetVertices(i));
-        }
-        ImGui::Text("Num Faces:");
-        for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
-            ImGui::Text("Mesh %d: %d", i+1, App->model->GetFaces(i));
-        }        
-    }
-
-    // Texture
-    if (ImGui::CollapsingHeader("Texture", &open_texture, ImGuiTreeNodeFlags_DefaultOpen)) {
-        for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
-            /*int textw = App->model->GetTextureWidth(i);
-            int texth = App->model->GetTextureHeight(i);*/
-
-            ImGui::Text("Texture %d size: %d %d", i+1, 200, 200);
-            ImGui::Image((ImTextureID)App->model->GetMaterial(i), {200, 200});
-        }
-
-    }
-    if (ImGui::CollapsingHeader("Camera", &open_camera, ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        ImGui::Text("Front: %f %f %f", App->camera->getFront().x, App->camera->getFront().y, App->camera->getFront().z);
-        ImGui::Text("Up: %f %f %f", App->camera->getUp().x, App->camera->getUp().y, App->camera->getUp().z);
-        ImGui::Text("Right: %f %f %f", App->camera->getRight().x, App->camera->getRight().y, App->camera->getRight().z);
-    }
-
+           
     ImGui::SetWindowSize({ (float)(w / 2),(float)(h / 1.6) });
     focusProp = ImGui::IsWindowFocused();
 
@@ -441,8 +515,7 @@ void ModuleEditor::ConfigurationWindow() {
 
     static bool fullscreen = false;
     static bool border = false;
-    static bool resizable = true;
-    
+    static bool resizable = true;   
     
     // Window
     if (ImGui::CollapsingHeader("Window")) {
@@ -477,6 +550,7 @@ void ModuleEditor::ConfigurationWindow() {
         }        
     }
 
+    //Render
     if (ImGui::CollapsingHeader("Render"))
     {
         ImGui::SliderFloat3("Grid color", gridColor, 0.0f, 1.0f);
@@ -488,7 +562,8 @@ void ModuleEditor::ConfigurationWindow() {
         ImGui::SliderFloat("Kd", &kDiff, 0.1f, 2.0f);
         ImGui::SliderFloat("Ks", &kSpec, 0.04f, 1.0f);
     }
-    // Info
+
+    // Information
     if (ImGui::CollapsingHeader("Information")) {
 
         ImGui::Text("CPUs: %d", SDL_GetCPUCount());
@@ -556,5 +631,11 @@ void ModuleEditor::Project()
     ImGui::End();
 }
 
+void ModuleEditor::HideGamobject(bool active)
+{
+    if (!active)
+    {
 
+    }
+}
 
