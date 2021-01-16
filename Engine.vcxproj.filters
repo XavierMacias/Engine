@@ -177,6 +177,9 @@
     <ClCompile Include="CameraComponent.cpp">
       <Filter>GO_Components</Filter>
     </ClCompile>
+    <ClCompile Include="Gizmos\ImGuizmo.cpp">
+      <Filter>GO_Components\Gizmos</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -464,6 +467,12 @@
     <ClInclude Include="CameraComponent.h">
       <Filter>GO_Components</Filter>
     </ClInclude>
+    <ClInclude Include="Gizmos\ImGuizmo.h">
+      <Filter>GO_Components\Gizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="stb\include\stb_image.h">
+      <Filter>stb</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
@@ -499,6 +508,12 @@
     <Filter Include="Timer">
       <UniqueIdentifier>{b027c1a5-953a-47b9-af55-f916654ad6af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GO_Components\Gizmos">
+      <UniqueIdentifier>{17112800-9cc1-4509-bd74-36de52cbc9a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stb">
+      <UniqueIdentifier>{8b3d108b-f2a2-4363-8556-9a3490a62d25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\Math\float2.inl">
@@ -526,6 +541,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\VertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\FragmentShaderSky.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\VertexShaderSky.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

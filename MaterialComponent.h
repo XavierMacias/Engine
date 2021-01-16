@@ -6,6 +6,11 @@
 
 class MaterialComponent : public Component
 {
+	enum MaterialType
+	{
+		DIFFUSE,
+
+	};
 private:
 	std::string materialName;
 	

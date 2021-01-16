@@ -9,7 +9,8 @@
 #include <string>
 
 #include "GL/glew.h"
-
+#include <vector>
+#include <string>
 struct SDL_Texture;
 struct SDL_Renderer;
 struct SDL_Rect;
@@ -30,12 +31,16 @@ public:
 	void* GetContext() { return context; }
 
 	void CreateFrameBuffer();
+	unsigned int loadCubemap(std::vector<std::string> faces);
+	void VAOSkybox();
 
 	//Framebuffer
 	unsigned int framebuffer;
 	unsigned int textureColorbuffer;
 	
-
+	//Cubemap
+	unsigned int textureID;
+	std::vector<std::string> faces;
 public:	
 	float3 grid;
 	float4 background;
@@ -43,5 +48,7 @@ public:
 private:
 	std::string getFileExt(const std::string s);	
 	void* context;
+	unsigned int skyboxVAO, skyboxVBO;
+	unsigned int cubemapTexture;
 };
 

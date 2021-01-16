@@ -25,9 +25,10 @@ public:
 	int GetTextureHeight(int i) { return heights[i]; }
 	float ComputeCenter();
 
-private:
+public:
 	void LoadMaterials(const char* model_path);
 	void LoadMeshes();
+	void LoadMeshes(const char* file_name);
 	const aiScene* scene;
 	//float boundaryRadius;
 

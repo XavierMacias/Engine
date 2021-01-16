@@ -8,6 +8,10 @@
 #include "SDL/include/SDL.h"
 #include "ModuleScene.h"
 #include "MeshComponent.h"
+#include <vector>
+#include "Gizmos/ImGuizmo.h"
+#include "MathGeoLib/Math/float3x3.h"
+#include "MathGeoLib/Math/float4x4.h"
 
 ModuleEditor::ModuleEditor()
 {
@@ -46,6 +50,7 @@ update_status ModuleEditor::PreUpdate()
     ImGui_ImplSDL2_NewFrame(App->window->window);
     /*ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;*/
     ImGui::NewFrame();    
+    ImGuizmo::BeginFrame();
     ImGui::ShowDemoWindow();
 
     return UPDATE_CONTINUE;
@@ -276,9 +281,7 @@ void ModuleEditor::Properties() {
             //Activate gameobject
             bool active = selectedObject->isActive();
             ImGui::Checkbox("Active", &active);
-            selectedObject->SetActive(active);
-
-            
+            selectedObject->SetActive(active);            
 
             //Gameobject name
             ImGui::Text("Name: %s", selectedObject->name);
@@ -312,33 +315,101 @@ void ModuleEditor::Properties() {
     }
     
 
-    // Transformation: TODO LINK IMGUI WITH GAMEOBJECT TRANSFORM, PROBLEMS WITH FLOAT3
+    // Transformation: TODO SEE HOW AFECT THE TRANSFROM TO THE REAL MODEL POSITION
     if (selectedObject != nullptr)
     {
-        if (ImGui::CollapsingHeader("Transformation", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
+        static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
+        static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+        if (ImGui::IsKeyPressed(90))
+            mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+        if (ImGui::IsKeyPressed(69))
+            mCurrentGizmoOperation = ImGuizmo::ROTATE;
+        if (ImGui::IsKeyPressed(82)) // r Key
+            mCurrentGizmoOperation = ImGuizmo::SCALE;
+        if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+            mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+            mCurrentGizmoOperation = ImGuizmo::ROTATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+            mCurrentGizmoOperation = ImGuizmo::SCALE;
+        //ImGuizmo::DecomposeMatrixToComponents(matrix.m16, matrixTranslation, matrixRotation, matrixScale);
+                        
+        if (ImGui::CollapsingHeader("Transformation", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {           
+
+            float3 position = selectedObject->GetLocalPosition();
+            Quat rotation = selectedObject->GetLocalRotation();
+            float3 scale = selectedObject->GetScale();                
+
+            matrixTranslation[0] = position.x;
+            matrixTranslation[1] = position.y;
+            matrixTranslation[2] = position.z;
+
+            matrixRotation[0] = rotation.x;
+            matrixRotation[1] = rotation.y;
+            matrixRotation[2] = rotation.z;
+            
+            matrixScale[0] = scale.x;
+            matrixScale[1] = scale.y;
+            matrixScale[2] = scale.z;
+
             //Coords               
             ImGui::Text("Transform");
-            ImGui::InputFloat3("Position", position, "%.3f", ImGuiInputTextFlags_ReadOnly);
-            ImGui::InputFloat3("Rotation", rotation, "%.3f", ImGuiInputTextFlags_ReadOnly);
-            ImGui::InputFloat3("Scale", scale, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        }
+            ImGui::InputFloat3("Position", matrixTranslation, "%.2f");
+            ImGui::InputFloat3("Rotation", matrixRotation, "%.2f");
+            ImGui::InputFloat3("Scale", matrixScale, "%.2f");
+
+            selectedObject->SetLocalPosition(matrixTranslation);
+            selectedObject->SetLocalRotation(matrixRotation);
+            selectedObject->SetScale(matrixScale);
+        }       
+        
+        //ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix.m16);
     }
-    //JUST SHOW THE COMPONENTS WHICH WE NEED 
+
+    //Components
     if (selectedObject!=nullptr && !selectedObject->components.empty())
     {
         //Mesh Filter: TODO LINK WITH THE GAMEOBJECT MESH
         if (open_mesh)
-        {
+        {           
             if (ImGui::CollapsingHeader("Mesh Filter", &open_mesh, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Selected))
             {
+                // Mesh name component for that gameobject
+                MeshComponent mesh(selectedObject);
+                char* meshName = mesh.GetMeshName();
+
                 ImGui::Text("Mesh");
                 ImGui::SameLine();
                 ImGui::Button(meshName);
                 if (ImGui::BeginPopupContextItem())
-                {
-                    ImGui::Text("Meshes:");
-                    if (ImGui::Selectable("BakerHouse")) { meshName = "BakerHouse"; }//Try to acces to the components for the gameobject***********
-                    if (ImGui::Selectable("AnotherOne")) { meshName = "AnotherOneMesh"; }//All of this is temporal            
+                {         
+                    ImGui::Text("Meshes");
+                    if (ImGui::Selectable("AmongUs")) 
+                    { 
+                        mesh.SelectMesh(MeshComponent::AmongUs); 
+                        meshName = mesh.GetMeshName();                        
+                        App->model->LoadMeshes("AmongUs.fbx");
+                    }
+                    if (ImGui::Selectable("Fox"))
+                    {
+                        mesh.SelectMesh(MeshComponent::Fox);
+                        meshName = mesh.GetMeshName();
+                        App->model->LoadMeshes("Fox.fbx");
+                    }
+                    if (ImGui::Selectable("BakerHouse"))
+                    {
+                        mesh.SelectMesh(MeshComponent::BakerHouse);
+                        meshName = mesh.GetMeshName();
+                        App->model->LoadMeshes("BakerHouse.fbx");
+                    }
+                    if (ImGui::Selectable("Robot"))
+                    {
+                        mesh.SelectMesh(MeshComponent::Robot);
+                        meshName = mesh.GetMeshName();
+                        App->model->LoadMeshes("Robot.FBX");
+                    }                          
                     if (ImGui::Button("Close"))
                         ImGui::CloseCurrentPopup();
                     ImGui::EndPopup();
@@ -378,8 +449,8 @@ void ModuleEditor::Properties() {
                 if (ImGui::BeginPopupContextItem())
                 {
                     ImGui::Text("Materials:");
-                    if (ImGui::Selectable("BakerHouse")) { meshName = "BakerHouse"; }
-                    if (ImGui::Selectable("AnotherOne")) { meshName = "AnotherOneMesh"; }//All of this is temporal            
+                    if (ImGui::Selectable("BakerHouse")) {  }
+                    if (ImGui::Selectable("AnotherOne")) { }//All of this is temporal            
                     if (ImGui::Button("Close"))
                         ImGui::CloseCurrentPopup();
                     ImGui::EndPopup();

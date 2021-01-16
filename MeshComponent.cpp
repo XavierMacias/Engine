@@ -5,19 +5,14 @@ MeshComponent::MeshComponent(GameObject* gameObject) : Component(gameObject, Com
 
 MeshComponent::~MeshComponent() {}
 
-void MeshComponent::SetMesh(unsigned int mesh)
-{
-	
-}
+
 
 void MeshComponent::SelectMesh(MeshComponent::Meshes meshselected)
-{
-	const Mesh mesh;
+{	
 	switch (meshselected)
 	{
 	case MeshComponent::AmongUs:
-		meshName = "Among Us";
-		//Load the mesh
+		meshName = "AmongUs";
 		break;
 	case MeshComponent::Fox:
 		meshName = "Fox";
@@ -28,8 +23,7 @@ void MeshComponent::SelectMesh(MeshComponent::Meshes meshselected)
 	case MeshComponent::Robot:
 		meshName = "Robot";
 		break;
-	default:
-		meshName = "None";
+	default:			
 		break;
 	}
 }

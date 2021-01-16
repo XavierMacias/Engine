@@ -56,14 +56,6 @@ private:
 	bool open_camera{ false };
 	bool open_mesh{ false };
 	bool open_material{ false };
-	
-	//Meshes
-	char* meshName{"BakerHouse"};
-
-	//Temporal 
-	float position[3]{ 0.0f, 0.0f, 0.0f };
-	float rotation[3]{ 0.0f, 0.0f, 0.0f };
-	float scale[3]{ 0.0f, 0.0f, 0.0f };
 
 public:
 	float* gridColor{ new float[3]{1.000000f, 0.647059f, 0.000000f} };
@@ -74,6 +66,12 @@ public:
 	float nSpec = 2.0f;
 	float kSpec = 0.04f;
 	float kDiff = 0.7f;
+
+private:
+	float matrixTranslation[3] = { 0.0f, 0.0f, 0.0f };
+	float matrixRotation[3] = { 0.0f, 0.0f, 0.0f };
+	float matrixScale[3] = { 0.0f, 0.0f, 0.0f };
+
 };
 
 #define NUM_EDITORS 2

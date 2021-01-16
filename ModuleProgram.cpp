@@ -8,7 +8,8 @@ ModuleProgram::ModuleProgram()
 }
 
 // Called before render is available
-bool ModuleProgram::Init()
+
+void ModuleProgram::ShaderInit(const char* shaderpath)
 {
 	SDL_GL_SetAttribute(
 		SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG
@@ -16,7 +17,7 @@ bool ModuleProgram::Init()
 
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-
+		
 	vtx_shader = CompileShader(GL_VERTEX_SHADER, LoadShaderSource(".\\Shaders\\VertexShader.glsl"));
 	frg_shader = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource(".\\Shaders\\FragmentShader.glsl"));
 
@@ -40,8 +41,7 @@ bool ModuleProgram::Init()
 		}
 	}
 	glDeleteShader(vtx_shader);
-	glDeleteShader(frg_shader);
-	return true;
+	glDeleteShader(frg_shader);	
 }
 
 

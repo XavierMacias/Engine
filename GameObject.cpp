@@ -65,20 +65,41 @@ void GameObject::SetLocalTransform(const float4x4& transform)
 	rotationEditor = rotation.ToEulerXYZ().Abs();
 }
 
-void GameObject::SetLocalPosition(const float3& pos)
+void GameObject::SetLocalPosition(const float pos[3])
 {
-	position = pos;
+	position.x = pos[0];
+	position.y = pos[1];
+	position.z = pos[2];
 }
 
-void GameObject::SetLocalRotation(const Quat& rotation)
+void GameObject::SetLocalRotation(const float rot[3])
 {
-	this->rotation = rotation;
-	rotationEditor = rotation.ToEulerXYZ().Abs();
+	rotation.x = rot[0];
+	rotation.y = rot[1];
+	rotation.z = rot[2];
+	rotation.w = 1.0f;
 }
 
-void GameObject::SetLocalScale(const float3& scale)
+void GameObject::SetScale(const float scl[3])
 {
-	this->scale = scale;
+	scale.x = scl[0];
+	scale.y = scl[1];
+	scale.z = scl[2];
+}
+
+float3 GameObject::GetLocalPosition()
+{
+	return position;	
+}
+
+Quat GameObject::GetLocalRotation()
+{
+	return rotation;
+}
+
+float3 GameObject::GetScale()
+{
+	return scale;
 }
 
 bool GameObject::HasMeshComponent()
@@ -90,6 +111,13 @@ bool GameObject::HasMeshComponent()
 			return true;
 		}
 	}
+}
+
+void GameObject::GetComponent(Component::ComponentType type, std::vector<Component*>& results)
+{
+	for (std::vector<Component*>::const_iterator it = components.begin(); it != components.end(); ++it)
+		if ((*it)->GetType() == type)
+			results.push_back(*it);
 }
 
 bool GameObject::HasMaterialComponent()

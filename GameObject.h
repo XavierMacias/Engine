@@ -7,6 +7,7 @@
 
 #include "Globals.h"
 #include "Component.h"
+#include "MathGeoLib/Math/float3.h"
 #include "MathGeoLib/Math/Quat.h"
 #include "MathGeoLib/Math/float4x4.h"
 
@@ -18,6 +19,7 @@ private:
 	GameObject* parent;
 	UID uid;
 	Quat rotation = Quat::identity;
+	float4x4 localTransform;
 
 public:
 	float3 position = float3::zero;
@@ -37,20 +39,26 @@ public:
 
 	void Update();
 	Component* CreateComponent(Component::ComponentType type);
+	void GetComponent(Component::ComponentType type, std::vector<Component*>& results);
 	GameObject* GetParent() { return parent; }
 	void setParent(GameObject* parent);
 	bool GetRoot() { return isRoot; }
 	int GetUid() { return uid; }
+
 
 	bool isActive();
 	void SetActive(bool act);
 
 	void SetName(char* n) { name = n; }
 	void SetLocalTransform(const float4x4& transform);
-	void SetLocalPosition(const float3& pos);	
-	void SetLocalRotation(const Quat& rotation);
-	void SetLocalScale(const float3& scale);
+	void SetLocalPosition(const float pos[3]);
+	void SetLocalRotation(const float rot[3]);
+	void SetScale(const float scl[3]);
 	
+	float3 GetLocalPosition();
+	Quat GetLocalRotation();
+	float3 GetScale();
+
 	bool HasMeshComponent();
 	bool HasMaterialComponent();
 

@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./glew-2.1.0/include;./SDL/include;./DevIL/include;./Assimp/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./stb/include;./glew-2.1.0/include;./SDL/include;./DevIL/include;./Assimp/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -145,6 +145,7 @@
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="debug_draw.hpp" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Gizmos\ImGuizmo.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -246,12 +247,16 @@
     <ClInclude Include="ModuleTimer.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="stb\include\stb_image.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Gizmos\ImGuizmo.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -326,7 +331,9 @@
     <None Include="MathGeoLib\Math\float2.inl" />
     <None Include="MathGeoLib\Math\Matrix.inl" />
     <None Include="Shaders\FragmentShader.glsl" />
+    <None Include="Shaders\FragmentShaderSky.glsl" />
     <None Include="Shaders\VertexShader.glsl" />
+    <None Include="Shaders\VertexShaderSky.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\lenna.png" />

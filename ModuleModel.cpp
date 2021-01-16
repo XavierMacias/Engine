@@ -67,7 +67,7 @@ void ModuleModel::LoadMaterials(const char* model_path) {
 		}
 		else {
 			App->editor->AddLog("Difusse texture not found...\n");
-			materials.push_back(App->texture->Load("black.png", model_path)); // put a black texture to avoid the engine crashes
+			materials.push_back(App->texture->Load("default.png", model_path)); // put a black texture to avoid the engine crashes
 		}
 		widths.push_back(App->texture->GetWidth());
 		heights.push_back(App->texture->GetHeight());
@@ -81,8 +81,7 @@ void ModuleModel::LoadTexture(const char* file) {
 }
 
 void ModuleModel::LoadMeshes() {
-	aiString file;
-
+	
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i)
 	{
 		aiMesh* currentMesh = scene->mMeshes[i];
@@ -92,6 +91,24 @@ void ModuleModel::LoadMeshes() {
 		mesh.CreateVAO();
 		meshes.push_back(mesh);
 	}
+}
+
+void ModuleModel::LoadMeshes(const char* file_name) 
+{
+	const aiScene* sce;
+	sce = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes);
+	if (sce)
+	{
+		for (unsigned i = 0; i < sce->mNumMeshes; ++i)
+		{
+			aiMesh* currentMesh = sce->mMeshes[i];
+			Mesh mesh;
+			mesh.LoadVBO(currentMesh);
+			mesh.LoadEBO(currentMesh);
+			mesh.CreateVAO();
+			meshes.push_back(mesh);
+		}
+	}	
 }
 
 float ModuleModel::ComputeCenter() {
@@ -124,8 +141,10 @@ float ModuleModel::ComputeCenter() {
 	return bd;
 }
 
-void ModuleModel::Draw() {
-	for (unsigned i = 0; i < meshes.size(); ++i) {
+void ModuleModel::Draw() 
+{
+	for (unsigned i = 0; i < meshes.size(); ++i) 
+	{
 		meshes[i].Draw(materials);
 	}
 }
