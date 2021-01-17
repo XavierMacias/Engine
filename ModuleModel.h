@@ -2,6 +2,9 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Mesh.h"
+#include "GameObject.h"
+#include "MeshComponent.h"
+#include "MaterialComponent.h"
 #include "Assimp/scene.h"
 #include <vector>
 
@@ -13,7 +16,7 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
-	void Load(const char* file_name);
+	void Load(const char* file_name, GameObject* go);
 	void LoadTexture(const char* file_name);
 	void Draw();
 	int GetVertices(int mesh) { return scene->mMeshes[mesh]->mNumVertices; }
@@ -26,8 +29,8 @@ public:
 	float ComputeCenter();
 
 public:
-	void LoadMaterials(const char* model_path);
-	void LoadMeshes();
+	void LoadMaterials(const char* model_path, GameObject* go);
+	void LoadMeshes(GameObject* go);
 	void LoadMeshes(const char* file_name);
 	const aiScene* scene;
 	//float boundaryRadius;

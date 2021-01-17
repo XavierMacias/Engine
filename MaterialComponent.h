@@ -13,13 +13,18 @@ class MaterialComponent : public Component
 	};
 private:
 	std::string materialName;
+	int width, height;
+	unsigned textureID;
 	
 public:
-	MaterialComponent(GameObject* gameObject);
+	MaterialComponent(GameObject* gameObject, std::string name);
 	~MaterialComponent();
 
-	void setMaterial(int material);
-	void getMaterial();
+	void SetMaterial(unsigned material) { textureID = material; }
+	unsigned GetMaterial() { return textureID; };
+	void SetDimensions(int w, int h) { width = w; height = h; }
+	int GetWidth() { return width; }
+	int GetHeight() { return height; }
 };
 
 

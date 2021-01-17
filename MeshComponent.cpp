@@ -1,7 +1,8 @@
 #include "MeshComponent.h"
 #include "Mesh.h"
 
-MeshComponent::MeshComponent(GameObject* gameObject) : Component(gameObject, ComponentType::MESH_COMPONENT) {}
+MeshComponent::MeshComponent(GameObject* gameObject, std::string name) : Component(gameObject, ComponentType::MESH_COMPONENT, name) {
+}
 
 MeshComponent::~MeshComponent() {}
 
@@ -9,7 +10,7 @@ MeshComponent::~MeshComponent() {}
 
 void MeshComponent::SelectMesh(MeshComponent::Meshes meshselected)
 {	
-	switch (meshselected)
+	/*switch (meshselected)
 	{
 	case MeshComponent::AmongUs:
 		meshName = "AmongUs";
@@ -25,7 +26,7 @@ void MeshComponent::SelectMesh(MeshComponent::Meshes meshselected)
 		break;
 	default:			
 		break;
-	}
+	}*/
 }
 
 

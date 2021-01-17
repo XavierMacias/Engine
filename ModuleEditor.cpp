@@ -30,16 +30,7 @@ bool ModuleEditor::Init()
     objIndex = 0;
     open_transformation = true;
     
-    root = App->scene->CreateGameObject(NULL, "Scene", true);
-    /*GameObject* go1 = App->scene->CreateGameObject(NULL, "GameObject1");
-    GameObject* go2 = App->scene->CreateGameObject(NULL, "GameObject2");
-    GameObject* go3 = App->scene->CreateGameObject(go2, "GameChild3");
-    GameObject* go4 = App->scene->CreateGameObject(go2, "GameChild4");
-    GameObject* go5 = App->scene->CreateGameObject(go4, "GrandChild5");
-    GameObject* go6 = App->scene->CreateGameObject(NULL, "GameObject6");
-    GameObject* go7 = App->scene->CreateGameObject(go1, "GameChild7");
-    GameObject* go8 = App->scene->CreateGameObject(go7, "GrandChild8");
-    GameObject* go9 = App->scene->CreateGameObject(go5, "GrandGran9");*/
+    //root = App->scene->CreateGameObject(NULL, "Scene", true);
 
 	return true;
 }
@@ -180,13 +171,13 @@ void ModuleEditor::Hierarchy()
     
     if (ImGui::Button("Create empty GameObject"))
         //ImGui::OpenPopup("Create");
-        App->scene->CreateGameObject(root, "New GameObject", false);
+        App->scene->CreateGameObject(App->scene->GetRoot(), "New GameObject", false);
         
 
     if (ImGui::BeginPopupModal("Create", NULL, ImGuiWindowFlags_AlwaysAutoResize))
     {
         if (ImGui::Button("Create")) {
-            App->scene->CreateGameObject(root, "New GameObject", false);
+            App->scene->CreateGameObject(App->scene->GetRoot(), "New GameObject", false);
             ImGui::CloseCurrentPopup();
             //createName[64] = (char)"New GameObject";
         }
@@ -199,7 +190,7 @@ void ModuleEditor::Hierarchy()
 
     //if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_DefaultOpen))
     //{
-    GetHierarchy(root);
+    GetHierarchy(App->scene->GetRoot());
         //ImGui::TreePop();
     //}
     
@@ -281,7 +272,7 @@ void ModuleEditor::Properties() {
             //Activate gameobject
             bool active = selectedObject->isActive();
             ImGui::Checkbox("Active", &active);
-            selectedObject->SetActive(active);            
+            selectedObject->SetActive(active);
 
             //Gameobject name
             ImGui::Text("Name: %s", selectedObject->name);
@@ -371,74 +362,60 @@ void ModuleEditor::Properties() {
     //Components
     if (selectedObject!=nullptr && !selectedObject->components.empty())
     {
-        //Mesh Filter: TODO LINK WITH THE GAMEOBJECT MESH
-        if (open_mesh)
-        {           
-            if (ImGui::CollapsingHeader("Mesh Filter", &open_mesh, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Selected))
-            {
-                // Mesh name component for that gameobject
-                MeshComponent mesh(selectedObject);
-                char* meshName = mesh.GetMeshName();
+        if (ImGui::CollapsingHeader("Mesh", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
+            
+            std::vector<Component*> meshComponents;
+            selectedObject->GetComponent(Component::ComponentType::MESH_COMPONENT, meshComponents);
 
-                ImGui::Text("Mesh");
-                ImGui::SameLine();
-                ImGui::Button(meshName);
-                if (ImGui::BeginPopupContextItem())
-                {         
-                    ImGui::Text("Meshes");
-                    if (ImGui::Selectable("AmongUs")) 
-                    { 
-                        mesh.SelectMesh(MeshComponent::AmongUs); 
-                        meshName = mesh.GetMeshName();                        
-                        App->model->LoadMeshes("AmongUs.fbx");
-                    }
-                    if (ImGui::Selectable("Fox"))
-                    {
-                        mesh.SelectMesh(MeshComponent::Fox);
-                        meshName = mesh.GetMeshName();
-                        App->model->LoadMeshes("Fox.fbx");
-                    }
-                    if (ImGui::Selectable("BakerHouse"))
-                    {
-                        mesh.SelectMesh(MeshComponent::BakerHouse);
-                        meshName = mesh.GetMeshName();
-                        App->model->LoadMeshes("BakerHouse.fbx");
-                    }
-                    if (ImGui::Selectable("Robot"))
-                    {
-                        mesh.SelectMesh(MeshComponent::Robot);
-                        meshName = mesh.GetMeshName();
-                        App->model->LoadMeshes("Robot.FBX");
-                    }                          
-                    if (ImGui::Button("Close"))
-                        ImGui::CloseCurrentPopup();
-                    ImGui::EndPopup();
-                }
-            }
-
-            // Geometry: TODO LINK THIS GEOMETRY WITH THE GAMEOBJECT ONE
-            // For every mesh, show vertices and faces
             ImGui::Spacing();
             ImGui::Separator();
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Num Meshes");
             ImGui::Spacing();
-            ImGui::Text("%d", App->model->GetMeshes());
+            ImGui::Text("%d", meshComponents.size());
             ImGui::Separator();
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Vertices");
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Characteristics");
             ImGui::Spacing();
-            for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
-                ImGui::Text("Mesh %d: %d", i + 1, App->model->GetVertices(i));
+            for (int i = 0; i < meshComponents.size(); ++i) {
+                MeshComponent* meshc = (MeshComponent*)meshComponents[i];
+                
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Name: ");
+                ImGui::Text(meshc->GetName().c_str());
+                ImGui::Separator();
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Number Vertices: %d", meshc->GetMesh().GetNumVertices());
+                ImGui::Separator();
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Number Indices: %d", meshc->GetMesh().GetNumIndices());
+                ImGui::Spacing();
+
             }
-            ImGui::Separator();
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Faces");
-            ImGui::Spacing();
-            for (unsigned i = 0; i < App->model->GetMeshes(); ++i) {
-                ImGui::Text("Mesh %d: %d", i + 1, App->model->GetFaces(i));
-            }
-            ImGui::Separator();
+            
         }
 
+        if (ImGui::CollapsingHeader("Material", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
+            
+            std::vector<Component*> matComponents;
+            selectedObject->GetComponent(Component::ComponentType::MATERIAL_COMPONENT, matComponents);
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Num Materials");
+            ImGui::Spacing();
+            ImGui::Text("%d", matComponents.size());
+            ImGui::Spacing();
+            for (int i = 0; i < matComponents.size(); ++i) {
+                MaterialComponent* matc = (MaterialComponent*)matComponents[i];
+                
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Name: ");
+                ImGui::Text(matc->GetName().c_str());
+                ImGui::Text("Texture %d size: %d %d", i + 1, matc->GetWidth(), matc->GetHeight());
+                ImGui::Text(""); ImGui::SameLine(35);
+                ImGui::Image((ImTextureID)matc->GetMaterial(), { 200, 200 });
+                ImGui::Spacing();
+
+            }
+            
+        }
         //Material: TODO LINK WITH THE GAMEOBJECT MATERIAL
+
         if (open_material)
         {
             if (ImGui::CollapsingHeader("Material", &open_material, ImGuiTreeNodeFlags_DefaultOpen))
@@ -486,7 +463,7 @@ void ModuleEditor::Properties() {
         ImGui::Text("");
         ImGui::SameLine(60);
         ImGui::Button("Add component", ImVec2(120, 30));
-        if (ImGui::BeginPopupContextItem())
+        /*if (ImGui::BeginPopupContextItem())
         {
             ImGui::Text("New Component");
             if (ImGui::Button("Mesh component")) {
@@ -508,7 +485,7 @@ void ModuleEditor::Properties() {
             if (ImGui::Button("Cancel"))
                 ImGui::CloseCurrentPopup();
             ImGui::EndPopup();
-        }
+        }*/
     }
            
     ImGui::SetWindowSize({ (float)(w / 2),(float)(h / 1.6) });

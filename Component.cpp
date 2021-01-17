@@ -1,6 +1,11 @@
 #include "Component.h"
 
-Component::Component(GameObject* owner, ComponentType type) {}
+Component::Component(GameObject* ow, ComponentType t, std::string n) {
+	uid = App->random->Int();
+	name = n;
+	owner = ow;
+	type = t;
+}
 
 Component::~Component() {}
 

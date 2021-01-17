@@ -38,7 +38,7 @@ public:
 	~GameObject();
 
 	void Update();
-	Component* CreateComponent(Component::ComponentType type);
+	Component* CreateComponent(Component::ComponentType type, std::string name);
 	void GetComponent(Component::ComponentType type, std::vector<Component*>& results);
 	GameObject* GetParent() { return parent; }
 	void setParent(GameObject* parent);

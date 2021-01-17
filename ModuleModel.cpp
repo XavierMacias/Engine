@@ -44,33 +44,39 @@ bool ModuleModel::CleanUp()
 
 }
 
-void ModuleModel::Load(const char* file_name) {
+void ModuleModel::Load(const char* file_name, GameObject* go) {
 	scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes);
 	if (scene) {
-		LoadMaterials(file_name);
-		LoadMeshes();
+		LoadMaterials(file_name, go);
+		LoadMeshes(go);
 	}
 	else {
 		LOG("ERROR");
 	}
 }
 
-void ModuleModel::LoadMaterials(const char* model_path) {
+void ModuleModel::LoadMaterials(const char* model_path, GameObject* go) {
 	aiString file;
 
 	for (unsigned i = 0; i < scene->mNumMaterials; ++i)
 	{
+		unsigned text = 0;
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 		{
-			materials.push_back(App->texture->Load(file.data, model_path));
+			text = App->texture->Load(file.data, model_path);
+			materials.push_back(text);
 			App->editor->AddLog("Texture loaded\n");
 		}
 		else {
+			text = App->texture->Load("default.png", model_path);
 			App->editor->AddLog("Difusse texture not found...\n");
-			materials.push_back(App->texture->Load("default.png", model_path)); // put a black texture to avoid the engine crashes
+			materials.push_back(text); // put a black texture to avoid the engine crashes
 		}
 		widths.push_back(App->texture->GetWidth());
 		heights.push_back(App->texture->GetHeight());
+		MaterialComponent* comp = (MaterialComponent*)go->CreateComponent(Component::ComponentType::MATERIAL_COMPONENT, "Texture"+std::to_string(i+1));
+		comp->SetMaterial(text);
+		comp->SetDimensions(App->texture->GetWidth(), App->texture->GetHeight());
 	}
 }
 
@@ -80,7 +86,7 @@ void ModuleModel::LoadTexture(const char* file) {
 	heights.push_back(App->texture->GetHeight());
 }
 
-void ModuleModel::LoadMeshes() {
+void ModuleModel::LoadMeshes(GameObject* go) {
 	
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i)
 	{
@@ -90,10 +96,12 @@ void ModuleModel::LoadMeshes() {
 		mesh.LoadEBO(currentMesh);
 		mesh.CreateVAO();
 		meshes.push_back(mesh);
+		MeshComponent* comp = (MeshComponent*)go->CreateComponent(Component::ComponentType::MESH_COMPONENT, currentMesh->mName.C_Str());
+		comp->SetMesh(mesh);
 	}
 }
 
-void ModuleModel::LoadMeshes(const char* file_name) 
+void ModuleModel::LoadMeshes(const char* file_name)
 {
 	const aiScene* sce;
 	sce = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GenBoundingBoxes);

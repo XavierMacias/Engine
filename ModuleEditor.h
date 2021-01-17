@@ -35,7 +35,6 @@ private:
 
 		
 	GameObject* selectedObject = nullptr;
-	GameObject* root = nullptr;
 
 	ImGuiTextBuffer buf;
 	bool scrollToBottom;

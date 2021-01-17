@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Component.h"
 #include "Globals.h"
+#include <string>
 
 class MeshComponent : public Component
 {
@@ -19,16 +20,17 @@ public:
 	};
 
 private:
-	char* meshName = "None";
-	UID mesh = 0;
+	//char* meshName = "None";
 	Mesh meshResource;
 
 public:
-	MeshComponent(GameObject* gameObject);
+	MeshComponent(GameObject* gameObject, std::string name);
 	~MeshComponent();
 
-	char* GetMeshName() { return meshName; }
+	//char* GetMeshName() { return meshName; }
 	void SelectMesh(MeshComponent::Meshes mesh);
+	void SetMesh(Mesh mesh) { meshResource = mesh; }
+	Mesh GetMesh() { return meshResource; }
 
 };
 

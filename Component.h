@@ -1,7 +1,7 @@
 #ifndef __component__
 #define __component__
 
-
+#include "Application.h"
 #include <string>
 
 class GameObject;
@@ -18,14 +18,16 @@ public:
 private:
 	std::string name;
 	bool active;
-	GameObject* owner;	
+	GameObject* owner;
 	ComponentType type;
+	int uid;
+
 
 public:
-	Component(GameObject* gameObject, ComponentType type);
+	Component(GameObject* gameObject, ComponentType type, std::string n);
 	~Component();
 
-	void Enable(bool active);	
+	void Enable(bool active);
 
 	virtual void Init() {};
 	virtual void Update() {};
@@ -35,7 +37,9 @@ public:
 
 	Component::ComponentType GetType() const;
 	const char* GetTypeStr() const;
-
+	int GetUID() { return uid; }
+	std::string GetName() { return name; }
+	GameObject* GetOwner() { return owner; }
 
 };
 

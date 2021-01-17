@@ -2,7 +2,16 @@
 
 ModuleScene::ModuleScene() {}
 
-ModuleScene::~ModuleScene() {}
+ModuleScene::~ModuleScene() {
+	for (int i = 0; i < game_objects.size(); ++i) {
+		delete game_objects[i];
+	}
+}
+
+bool ModuleScene::Start() {
+	root = CreateGameObject(NULL, "Scene", true);
+	return true;
+}
 
 GameObject* ModuleScene::CreateGameObject(GameObject* parent, const char* name, bool root)
 {
@@ -48,4 +57,20 @@ void ModuleScene::SetNewParent(GameObject* newparent, GameObject* newchild) {
 	newchild->GetParent()->children.erase(std::remove(newchild->GetParent()->children.begin(), newchild->GetParent()->children.end(), newchild), newchild->GetParent()->children.end());
 	newchild->setParent(newparent);
 	newparent->children.push_back(newchild);
+}
+
+void ModuleScene::AddObject(const char* path) {
+
+	GameObject* go = CreateGameObject(root, path, false);
+	App->model->Load(path, go);
+}
+
+std::string ModuleScene::GetFilename(const std::string s) {
+
+	size_t i = s.rfind('/', s.length());
+	if (i != std::string::npos) {
+		return(s.substr(i + 1, s.length() - i));
+	}
+
+	return("");
 }

@@ -5,7 +5,7 @@
 
 GameObject::GameObject(GameObject* parent, const char* name, bool isRoot) : parent(parent), name(name), isRoot(isRoot)
 {
-	uid = App->random->Int();	
+	uid = App->random->Int();
 }
 
 GameObject::~GameObject()
@@ -26,7 +26,7 @@ void GameObject::Update()
 		(*it)->Update();
 }
 
-Component* GameObject::CreateComponent(Component::ComponentType type)
+Component* GameObject::CreateComponent(Component::ComponentType type, std::string name)
 {
 	Component* component = nullptr;
 
@@ -34,13 +34,13 @@ Component* GameObject::CreateComponent(Component::ComponentType type)
 	{	
 	case Component::ComponentType::MESH_COMPONENT:
 	{
-		component = new MeshComponent(this);
+		component = new MeshComponent(this, name);
 		break;
 	}
 
 	case Component::ComponentType::MATERIAL_COMPONENT:
 	{
-		component = new MaterialComponent(this);
+		component = new MaterialComponent(this, name);
 		break;
 	}
 

@@ -6,6 +6,7 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleTexture.h"
+#include "ModuleScene.h"
 #include "ModuleModel.h"
 #include "ModuleDebugDraw.h"
 #include "SDL.h"
@@ -73,16 +74,18 @@ bool ModuleRenderExercise::Init()
 }
 
 bool ModuleRenderExercise::Start() {
-	LoadModel("BakerHouse.fbx");
+	App->scene->AddObject("../Assets/BakerHouse.fbx");
+	//LoadModel("../Assets/BakerHouse.fbx");
 	return true;
 }
 
 void ModuleRenderExercise::LoadModel(char* filename) {
 	if (getFileExt((std::string)filename) == "fbx" || getFileExt((std::string)filename) == "FBX") {
-		App->model->CleanUp();
-		App->model->Load(filename);
+		//App->model->CleanUp();
+		//App->model->Load(filename);
 		//App->camera->Focus(true);
 		//SDL_free(filename);
+		App->scene->AddObject(filename);
 	}
 	else if (getFileExt((std::string)filename) == "png" || getFileExt((std::string)filename) == "dds") {
 		for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
@@ -134,7 +137,27 @@ update_status ModuleRenderExercise::Update()
 
 	App->draw->Draw(App->camera->setViewMatrix(), App->camera->setProjectionMatrix(), w, h, grid);
 
-	App->model->Draw();	
+	//App->model->Draw();
+	for (int i = 0; i < App->scene->GetGameObjects().size(); ++i) {
+		GameObject* go = App->scene->GetGameObjects()[i];
+		std::vector<Component*> meshComponents;
+		go->GetComponent(Component::ComponentType::MESH_COMPONENT, meshComponents);
+		std::vector<Component*> matComponents;
+		go->GetComponent(Component::ComponentType::MATERIAL_COMPONENT, matComponents);
+		std::vector<unsigned> materials;
+
+		for (int i = 0; i < matComponents.size(); ++i) {
+			MaterialComponent* mc = (MaterialComponent*)matComponents[i];
+			materials.push_back(mc->GetMaterial());
+		}
+
+		for (unsigned i = 0; i < meshComponents.size(); ++i)
+		{
+			MeshComponent* mc = (MeshComponent*)meshComponents[i];
+			mc->GetMesh().Draw(materials);
+		}
+
+	}
 
 	App->program->ShaderInit(".\\Shaders\\VertexShader.glsl");
 	App->program->ShaderInit(".\\Shaders\\FragmentShader.glsl");
