@@ -61,6 +61,8 @@ public:
 
 	bool HasMeshComponent();
 	bool HasMaterialComponent();
+	bool HasLightComponent();
+	bool HasCameraComponent();
 
 };
 

@@ -140,6 +140,7 @@ update_status ModuleRenderExercise::Update()
 	//App->model->Draw();
 	for (int i = 0; i < App->scene->GetGameObjects().size(); ++i) {
 		GameObject* go = App->scene->GetGameObjects()[i];
+
 		std::vector<Component*> meshComponents;
 		go->GetComponent(Component::ComponentType::MESH_COMPONENT, meshComponents);
 		std::vector<Component*> matComponents;

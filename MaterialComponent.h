@@ -15,6 +15,9 @@ private:
 	std::string materialName;
 	int width, height;
 	unsigned textureID;
+	float nSpec = 2.0f;
+	float kSpec = 0.04f;
+	float kDiff = 0.7f;
 	
 public:
 	MaterialComponent(GameObject* gameObject, std::string name);
@@ -25,6 +28,12 @@ public:
 	void SetDimensions(int w, int h) { width = w; height = h; }
 	int GetWidth() { return width; }
 	int GetHeight() { return height; }
+	float GetNSpec() { return nSpec; }
+	float GetKSpec() { return kSpec; }
+	float GetKDiff() { return kDiff; }
+	void SetNSpec(float n) { nSpec = n; }
+	void SetKSpec(float n) { kSpec = n; }
+	void SetKDiff(float n) { kDiff = n; }
 };
 
 

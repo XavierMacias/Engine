@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "GameObject.h"
+#include "LightComponent.h"
 #include <vector>
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_opengl3.h"

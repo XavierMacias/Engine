@@ -12,7 +12,9 @@ public:
 	enum ComponentType
 	{
 		MESH_COMPONENT,
-		MATERIAL_COMPONENT
+		MATERIAL_COMPONENT,
+		LIGHT_COMPONENT,
+		CAMERA_COMPONENT
 	};
 
 private:

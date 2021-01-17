@@ -8,17 +8,6 @@
 
 class MeshComponent : public Component
 {
-public:
-
-	//Swap when the file importer be ready
-	enum Meshes
-	{
-		AmongUs,
-		Fox,
-		BakerHouse,
-		Robot
-	};
-
 private:
 	//char* meshName = "None";
 	Mesh meshResource;
@@ -28,7 +17,6 @@ public:
 	~MeshComponent();
 
 	//char* GetMeshName() { return meshName; }
-	void SelectMesh(MeshComponent::Meshes mesh);
 	void SetMesh(Mesh mesh) { meshResource = mesh; }
 	Mesh GetMesh() { return meshResource; }
 

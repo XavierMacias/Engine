@@ -10,6 +10,11 @@ ModuleScene::~ModuleScene() {
 
 bool ModuleScene::Start() {
 	root = CreateGameObject(NULL, "Scene", true);
+	root->CreateComponent(Component::ComponentType::CAMERA_COMPONENT, "MainCamera");
+
+	light = CreateGameObject(root, "Directional Light", false);
+	light->CreateComponent(Component::ComponentType::LIGHT_COMPONENT, "Light");
+
 	return true;
 }
 

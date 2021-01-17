@@ -17,7 +17,7 @@ void Component::Enable(bool active)
 	}
 }
 
-Component::ComponentType Component::GetType() const 
+Component::ComponentType Component::GetType() const
 { 
 	return type; 
 }
@@ -28,6 +28,7 @@ const char* Component::GetTypeStr() const
 	{
 		"Mesh",
 		"Material",
+		"Light",
 		"Camera",
 	 };
 

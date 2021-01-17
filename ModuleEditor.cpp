@@ -8,6 +8,8 @@
 #include "SDL/include/SDL.h"
 #include "ModuleScene.h"
 #include "MeshComponent.h"
+#include "MaterialComponent.h"
+#include "CameraComponent.h"
 #include <vector>
 #include "Gizmos/ImGuizmo.h"
 #include "MathGeoLib/Math/float3x3.h"
@@ -179,22 +181,13 @@ void ModuleEditor::Hierarchy()
         if (ImGui::Button("Create")) {
             App->scene->CreateGameObject(App->scene->GetRoot(), "New GameObject", false);
             ImGui::CloseCurrentPopup();
-            //createName[64] = (char)"New GameObject";
         }
-        //char createName[64] = "New GameObject";
-        //ImGui::InputText("Name", createName, 64);
         if (ImGui::Button("No"))
             ImGui::CloseCurrentPopup();
         ImGui::EndPopup();
     }
 
-    //if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_DefaultOpen))
-    //{
     GetHierarchy(App->scene->GetRoot());
-        //ImGui::TreePop();
-    //}
-    
-    /*ConfigurationWindow();*/
     ImGui::End();
 }
 
@@ -276,32 +269,6 @@ void ModuleEditor::Properties() {
 
             //Gameobject name
             ImGui::Text("Name: %s", selectedObject->name);
-            /*static char name[64];
-            //strcpy_s(name, 64, gameobjects[0]->name);
-            
-            if (ImGui::InputText("Name", name, 64,
-                ImGuiInputTextFlags_AutoSelectAll))
-                gameobjects[0]->name = name;
-            //static char name[64];
-
-            //for (int i = 0; selectedObject->name[i] != '\0'; ++i) {
-            //    name[i] = selectedObject->name[i];
-            //}
-
-            //ImGui::InputText("Name", name, 64);
-            //if (ImGui::Button("Change Name"))
-            //    selectedObject->SetName(name);
-            /*
-            if (ImGui::BeginPopupModal("Remove", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-            {
-                ImGui::Text("Remove Gameobject?");
-                if (ImGui::Selectable("Yes")) {
-                    App->scene->RemoveGameObject(selectedObject);
-                }
-                if (ImGui::Button("No"))
-                    ImGui::CloseCurrentPopup();
-                ImGui::EndPopup();
-            }*/
         }
     }
     
@@ -362,130 +329,113 @@ void ModuleEditor::Properties() {
     //Components
     if (selectedObject!=nullptr && !selectedObject->components.empty())
     {
-        if (ImGui::CollapsingHeader("Mesh", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
-            
-            std::vector<Component*> meshComponents;
-            selectedObject->GetComponent(Component::ComponentType::MESH_COMPONENT, meshComponents);
+        if (selectedObject->HasMeshComponent()) {
+            if (ImGui::CollapsingHeader("Mesh", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
 
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Num Meshes");
-            ImGui::Spacing();
-            ImGui::Text("%d", meshComponents.size());
-            ImGui::Separator();
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Characteristics");
-            ImGui::Spacing();
-            for (int i = 0; i < meshComponents.size(); ++i) {
-                MeshComponent* meshc = (MeshComponent*)meshComponents[i];
-                
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Name: ");
-                ImGui::Text(meshc->GetName().c_str());
-                ImGui::Separator();
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Number Vertices: %d", meshc->GetMesh().GetNumVertices());
-                ImGui::Separator();
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Number Indices: %d", meshc->GetMesh().GetNumIndices());
+                std::vector<Component*> meshComponents;
+                selectedObject->GetComponent(Component::ComponentType::MESH_COMPONENT, meshComponents);
+
                 ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Num Meshes");
+                ImGui::Spacing();
+                ImGui::Text("%d", meshComponents.size());
+                ImGui::Separator();
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Characteristics");
+                ImGui::Spacing();
+                for (int i = 0; i < meshComponents.size(); ++i) {
+                    MeshComponent* meshc = (MeshComponent*)meshComponents[i];
+
+                    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Name: ");
+                    ImGui::Text(meshc->GetName().c_str());
+                    ImGui::Separator();
+                    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Number Vertices: %d", meshc->GetMesh().GetNumVertices());
+                    ImGui::Separator();
+                    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Number Indices: %d", meshc->GetMesh().GetNumIndices());
+                    ImGui::Spacing();
+
+                }
 
             }
-            
         }
 
-        if (ImGui::CollapsingHeader("Material", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
-            
-            std::vector<Component*> matComponents;
-            selectedObject->GetComponent(Component::ComponentType::MATERIAL_COMPONENT, matComponents);
+        if (selectedObject->HasMaterialComponent()) {
+            if (ImGui::CollapsingHeader("Material", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
 
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Num Materials");
-            ImGui::Spacing();
-            ImGui::Text("%d", matComponents.size());
-            ImGui::Spacing();
-            for (int i = 0; i < matComponents.size(); ++i) {
-                MaterialComponent* matc = (MaterialComponent*)matComponents[i];
-                
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Name: ");
-                ImGui::Text(matc->GetName().c_str());
-                ImGui::Text("Texture %d size: %d %d", i + 1, matc->GetWidth(), matc->GetHeight());
-                ImGui::Text(""); ImGui::SameLine(35);
-                ImGui::Image((ImTextureID)matc->GetMaterial(), { 200, 200 });
+                std::vector<Component*> matComponents;
+                selectedObject->GetComponent(Component::ComponentType::MATERIAL_COMPONENT, matComponents);
+
                 ImGui::Spacing();
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Num Materials");
+                ImGui::Spacing();
+                ImGui::Text("%d", matComponents.size());
+                ImGui::Spacing();
+                for (int i = 0; i < matComponents.size(); ++i) {
+                    MaterialComponent* matc = (MaterialComponent*)matComponents[i];
+                    kDiff = matc->GetKDiff();
+                    kSpec = matc->GetKSpec();
+                    nSpec = matc->GetNSpec();
+
+                    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Name: ");
+                    ImGui::Text(matc->GetName().c_str());
+                    ImGui::Text("Texture %d size: %d %d", i + 1, matc->GetWidth(), matc->GetHeight());
+                    ImGui::Text(""); ImGui::SameLine(35);
+                    ImGui::Image((ImTextureID)matc->GetMaterial(), { 200, 200 });
+                    ImGui::Spacing();
+                    ImGui::SliderFloat("Kd", &kDiff, 0.1f, 2.0f);
+                    ImGui::SliderFloat("Ks", &kSpec, 0.04f, 1.0f);
+                    ImGui::SliderFloat("Specular n", &nSpec, 0.5f, 250.0f);
+                    ImGui::Spacing();
+
+                    matc->SetKDiff(kDiff);
+                    matc->SetKSpec(kSpec);
+                    matc->SetNSpec(nSpec);
+
+                }
 
             }
-            
         }
-        //Material: TODO LINK WITH THE GAMEOBJECT MATERIAL
 
-        if (open_material)
-        {
-            if (ImGui::CollapsingHeader("Material", &open_material, ImGuiTreeNodeFlags_DefaultOpen))
-            {
-                ImGui::Text("Material");
-                ImGui::SameLine();
-                ImGui::Button("BakerHouse"); //->Put the material name
-                if (ImGui::BeginPopupContextItem())
-                {
-                    ImGui::Text("Materials:");
-                    if (ImGui::Selectable("BakerHouse")) {  }
-                    if (ImGui::Selectable("AnotherOne")) { }//All of this is temporal            
-                    if (ImGui::Button("Close"))
-                        ImGui::CloseCurrentPopup();
-                    ImGui::EndPopup();
-                }
-            }
+        if (selectedObject->HasLightComponent()) {
+            if (ImGui::CollapsingHeader("Light", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
 
-            // Texture: TODO CHANGE THIS, CHECK THE GAMEOBJECT ->SWAP TO MATERIAL            
-            for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
-                ImGui::Separator();
-                ImGui::Text("Texture %d size: %d %d", i + 1, 200, 200);
-                ImGui::Text(""); ImGui::SameLine(35);
-                ImGui::Image((ImTextureID)App->model->GetMaterial(i), { 200, 200 });
-            }
-            ImGui::Separator();
-            ImGui::Spacing();
-        }       
-        
-        //Camera
-        if (open_camera)
-        {
-            if (ImGui::CollapsingHeader("Camera", &open_camera))
-            {
-                ImGui::Text("Front: %f %f %f", App->camera->getFront().x, App->camera->getFront().y, App->camera->getFront().z);
-                ImGui::Text("Up: %f %f %f", App->camera->getUp().x, App->camera->getUp().y, App->camera->getUp().z);
-                ImGui::Text("Right: %f %f %f", App->camera->getRight().x, App->camera->getRight().y, App->camera->getRight().z);
-            }
-        }        
-    }   
-    
-    //Add component
-    if (selectedObject != nullptr)
-    {
-        ImGui::Text("");
-        ImGui::SameLine(60);
-        ImGui::Button("Add component", ImVec2(120, 30));
-        /*if (ImGui::BeginPopupContextItem())
-        {
-            ImGui::Text("New Component");
-            if (ImGui::Button("Mesh component")) {
-                if (selectedObject != nullptr)
-                {
-                    open_mesh = true;
-                    open_geometry = true;
-                    selectedObject->CreateComponent(Component::MESH_COMPONENT);
-                }
-            }
+                std::vector<Component*> lightComponents;
+                selectedObject->GetComponent(Component::ComponentType::LIGHT_COMPONENT, lightComponents);
 
-            if (ImGui::Button("Material component")) {
-                if (selectedObject != nullptr)
-                {
-                    open_material = true;
-                    selectedObject->CreateComponent(Component::MATERIAL_COMPONENT);
+                for (int i = 0; i < lightComponents.size(); ++i) {
+                    LightComponent* lightc = (LightComponent*)lightComponents[i];
+                    ambient_color = lightc->GetAmbientColor();
+                    light_color = lightc->GetLightColor();
+                    light_direction = lightc->GetLightDirection();
+
+                    ImGui::SliderFloat3("Ambient color", ambient_color, 0.0f, 1.0f);
+                    ImGui::SliderFloat3("Light color", light_color, 0.0f, 1.0f);
+                    ImGui::SliderFloat3("Light direction", light_direction, 0.0f, 1.0f);
+
+                    lightc->SetAmbientColor(ambient_color);
+                    lightc->SetLightColor(light_color);
+                    lightc->SetLightDirection(light_direction);
                 }
+
             }
-            if (ImGui::Button("Cancel"))
-                ImGui::CloseCurrentPopup();
-            ImGui::EndPopup();
-        }*/
+        }
+
+        if (selectedObject->HasCameraComponent()) {
+            if (ImGui::CollapsingHeader("Camera", &open_transformation, ImGuiTreeNodeFlags_DefaultOpen)) {
+
+                std::vector<Component*> cameraComponents;
+                selectedObject->GetComponent(Component::ComponentType::CAMERA_COMPONENT, cameraComponents);
+
+                for (int i = 0; i < cameraComponents.size(); ++i) {
+                    CameraComponent* camc = (CameraComponent*)cameraComponents[i];
+
+                    ImGui::Text("Front: %f %f %f", App->camera->getFront().x, App->camera->getFront().y, App->camera->getFront().z);
+                    ImGui::Text("Up: %f %f %f", App->camera->getUp().x, App->camera->getUp().y, App->camera->getUp().z);
+                    ImGui::Text("Right: %f %f %f", App->camera->getRight().x, App->camera->getRight().y, App->camera->getRight().z);
+                }
+
+            }
+        }    
     }
            
     ImGui::SetWindowSize({ (float)(w / 2),(float)(h / 1.6) });
@@ -603,12 +553,7 @@ void ModuleEditor::ConfigurationWindow() {
     {
         ImGui::SliderFloat3("Grid color", gridColor, 0.0f, 1.0f);
         ImGui::SliderFloat4("Background color", bGround, 0.0f, 1.0f);
-        ImGui::SliderFloat3("Ambient color", ambient_color, 0.0f, 1.0f);
-        ImGui::SliderFloat3("Light color", light_color, 0.0f, 1.0f);
-        ImGui::SliderFloat3("Light direction", light_direction, 0.0f, 1.0f);
-        ImGui::SliderFloat("Specular n", &nSpec, 0.5f, 250.0f);
-        ImGui::SliderFloat("Kd", &kDiff, 0.1f, 2.0f);
-        ImGui::SliderFloat("Ks", &kSpec, 0.04f, 1.0f);
+        
     }
 
     // Information

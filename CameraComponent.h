@@ -9,24 +9,9 @@
 
 class CameraComponent : public Component
 {
-private:
-	Frustum frustum;
-	bool isCulling;
-	bool isPespectiveProj; 
 public:
-	void updateFrustum();
-
-	void setNearPLane(float distance);
-	void setFarPlane(float distance);
-	void setFOV(float fov);
-	void setAspectRatio(float ar);
-
-	const float3 getUp() { return frustum.Up(); }
-	const float3 getFront() { return frustum.Front(); }
-	float getNearPLane() const;
-	float getFarPlane() const;
-	float getFOV() const;
-	float getAspectRatio() const;
+	CameraComponent(GameObject* gameObject, std::string name);
+	~CameraComponent();
 };
 
 #endif __camera_component__

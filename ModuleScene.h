@@ -10,6 +10,8 @@ class ModuleScene : public Module
 private:
 	std::vector <GameObject*> game_objects;
 	GameObject* root = nullptr;
+	GameObject* light = nullptr;
+	char* name;
 
 public:
 	ModuleScene();

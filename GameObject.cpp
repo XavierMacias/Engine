@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "MeshComponent.h"
 #include "MaterialComponent.h"
+#include "CameraComponent.h"
 #include "Application.h"
 
 GameObject::GameObject(GameObject* parent, const char* name, bool isRoot) : parent(parent), name(name), isRoot(isRoot)
@@ -41,6 +42,18 @@ Component* GameObject::CreateComponent(Component::ComponentType type, std::strin
 	case Component::ComponentType::MATERIAL_COMPONENT:
 	{
 		component = new MaterialComponent(this, name);
+		break;
+	}
+
+	case Component::ComponentType::LIGHT_COMPONENT:
+	{
+		component = new LightComponent(this, name);
+		break;
+	}
+
+	case Component::ComponentType::CAMERA_COMPONENT:
+	{
+		component = new CameraComponent(this, name);
 		break;
 	}
 
@@ -104,13 +117,17 @@ float3 GameObject::GetScale()
 
 bool GameObject::HasMeshComponent()
 {
-	for (int i = 0; i < components.size(); ++i)
-	{
-		if (components[i]->MESH_COMPONENT)
+	if (this) {
+		for (int i = 0; i < components.size(); ++i)
 		{
-			return true;
+			if (components[i]->GetType() == Component::ComponentType::MESH_COMPONENT)
+			{
+				return true;
+			}
 		}
+		return false;
 	}
+	
 }
 
 void GameObject::GetComponent(Component::ComponentType type, std::vector<Component*>& results)
@@ -122,13 +139,47 @@ void GameObject::GetComponent(Component::ComponentType type, std::vector<Compone
 
 bool GameObject::HasMaterialComponent()
 {
-	for (int i = 0; i < components.size(); ++i)
-	{
-		if (components[i]->MATERIAL_COMPONENT)
+	if (this) {
+		for (int i = 0; i < components.size(); ++i)
 		{
-			return true;
+			if (components[i]->GetType() == Component::ComponentType::MATERIAL_COMPONENT)
+			{
+				return true;
+			}
 		}
+		return false;
 	}
+	
+}
+
+bool GameObject::HasLightComponent()
+{
+	if (this) {
+		for (int i = 0; i < components.size(); ++i)
+		{
+			if (components[i]->GetType() == Component::ComponentType::LIGHT_COMPONENT)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+}
+
+bool GameObject::HasCameraComponent()
+{
+	if (this) {
+		for (int i = 0; i < components.size(); ++i)
+		{
+			if (components[i]->GetType() == Component::ComponentType::CAMERA_COMPONENT)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
 
 bool GameObject::isActive()

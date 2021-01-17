@@ -180,6 +180,9 @@
     <ClCompile Include="Gizmos\ImGuizmo.cpp">
       <Filter>GO_Components\Gizmos</Filter>
     </ClCompile>
+    <ClCompile Include="LightComponent.cpp">
+      <Filter>GO_Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -472,6 +475,9 @@
     </ClInclude>
     <ClInclude Include="stb\include\stb_image.h">
       <Filter>stb</Filter>
+    </ClInclude>
+    <ClInclude Include="LightComponent.h">
+      <Filter>GO_Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

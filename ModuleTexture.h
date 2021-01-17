@@ -17,6 +17,7 @@ public:
 	void FreeTexture(unsigned textID);
 	int GetWidth() { return width; }
 	int GetHeight() { return height; }
+	
 private:
 	int width, height;
 };
