@@ -15,7 +15,6 @@
 #include "MathGeoLib/Math/float3x3.h"
 #include "assimp/cimport.h"
 #include "Gizmos/ImGuizmo.h"
-#include <stb_image.h>
 
 ModuleRenderExercise::ModuleRenderExercise()	
 {
@@ -74,25 +73,20 @@ bool ModuleRenderExercise::Init()
 }
 
 bool ModuleRenderExercise::Start() {
-	App->scene->AddObject("../Assets/BakerHouse.fbx");
-	//LoadModel("../Assets/BakerHouse.fbx");
+	App->scene->AddObject("BakerHouse.fbx");
 	return true;
 }
 
 void ModuleRenderExercise::LoadModel(char* filename) {
 	if (getFileExt((std::string)filename) == "fbx" || getFileExt((std::string)filename) == "FBX") {
-		//App->model->CleanUp();
-		//App->model->Load(filename);
-		//App->camera->Focus(true);
-		//SDL_free(filename);
 		App->scene->AddObject(filename);
 	}
-	else if (getFileExt((std::string)filename) == "png" || getFileExt((std::string)filename) == "dds") {
-		for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
-			App->texture->FreeTexture(App->model->GetMaterial(i));
-		}
-		App->model->LoadTexture(filename);
-	}
+	//else if (getFileExt((std::string)filename) == "png" || getFileExt((std::string)filename) == "dds") {
+	//	for (int i = 0; i < App->model->GetNumMaterials(); ++i) {
+	//		App->texture->FreeTexture(App->model->GetMaterial(i));
+	//	}
+	//	App->model->LoadTexture(filename);
+	//}
 	else {
 		App->editor->AddLog("This isn't a FBX file");
 	}
@@ -233,8 +227,8 @@ void ModuleRenderExercise::CreateFrameBuffer()
 
 unsigned int ModuleRenderExercise::loadCubemap(std::vector<std::string> faces)
 {
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
+	unsigned int textureID = 0;
+	/*glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	int width, height, nrChannels;
@@ -259,7 +253,7 @@ unsigned int ModuleRenderExercise::loadCubemap(std::vector<std::string> faces)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
+	*/
 	return textureID;
 }
 

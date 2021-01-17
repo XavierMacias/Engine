@@ -44,7 +44,6 @@ update_status ModuleEditor::PreUpdate()
     /*ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;*/
     ImGui::NewFrame();    
     ImGuizmo::BeginFrame();
-    ImGui::ShowDemoWindow();
 
     return UPDATE_CONTINUE;
 }
